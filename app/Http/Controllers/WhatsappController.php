@@ -32,8 +32,8 @@ class WhatsappController extends Controller
 
         $data = json_decode($request->getContent(), true);
         $fecha = Carbon::now()->format('Y-m-d_H-i-s');
-        // Storage::disk('local')->put('Mensaje_Reicibidos-'.$fecha.'.txt', json_encode($data) );
         // $id = $data['entry'][0]['changes'][0]['value']['messages'][0]['id'];
+        // Storage::disk('local')->put('Mensaje_Reicibidos-'.$fecha.'.txt', json_encode($data) );
         $tipo = $data['entry'][0]['changes'][0]['value']['messages'][0]['type'];
         if ($tipo == 'audio') {
             $this->audioMensaje($data);
@@ -387,7 +387,7 @@ class WhatsappController extends Controller
         //         return response(200)->header('Content-Type', 'text/plain');
 
         //     }
-        }
+        // }
     }
 
     public function chatGptPruebas(Request $request) {
