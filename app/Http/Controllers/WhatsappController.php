@@ -34,7 +34,7 @@ class WhatsappController extends Controller
         $fecha = Carbon::now()->format('Y-m-d_H-i-s');
         // Storage::disk('local')->put('Mensaje_Reicibidos-'.$fecha.'.txt', json_encode($data) );
         // $id = $data['entry'][0]['changes'][0]['value']['messages'][0]['id'];
-        // $tipo = $data['entry'][0]['changes'][0]['value']['messages'][0]['type'];
+        $tipo = $data['entry'][0]['changes'][0]['value']['messages'][0]['type'];
         if ($tipo == 'audio') {
             $this->audioMensaje($data);
         }elseif($tipo == 'image') {
