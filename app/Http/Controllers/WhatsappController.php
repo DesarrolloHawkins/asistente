@@ -31,9 +31,10 @@ class WhatsappController extends Controller
     public function processHookWhatsapp(Request $request) {
 
         $data = json_decode($request->getContent(), true);
+        $fecha = Carbon::now()->format('Y-m-d_H-i-s');
+        Storage::disk('local')->put('Mensaje_Reicibidos-'.$fecha.'.txt', json_encode($data) );
 
-        $id = $data['entry'][0]['changes'][0]['value']['messages'][0]['id'];
-        Storage::disk('local')->put('Prueba-'.$id.'.txt', json_encode($data) );
+        // $id = $data['entry'][0]['changes'][0]['value']['messages'][0]['id'];
         return response(200)->header('Content-Type', 'text/plain');
         // $tipo = $data['entry'][0]['changes'][0]['value']['messages'][0]['type'];
 
