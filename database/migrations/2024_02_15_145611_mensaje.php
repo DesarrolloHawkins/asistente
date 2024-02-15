@@ -11,7 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::create('mensajes', function (Blueprint $table) {
+            $table->id();
+            $table->string('id_mensaje')->nullable();
+            $table->string('id_three')->nullable();
+            $table->string('remitente')->nullable();
+            $table->text('mensaje')->nullable();
+            $table->text('respuesta')->nullable();
+            $table->string('status_mensaje')->nullable();
+            $table->string('status')->nullable();
+            $table->string('type')->nullable();
+            $table->date('date')->nullable();
+            $table->rememberToken();
+            $table->softDeletes();
+            $table->timestamps();
+        });
     }
 
     /**
@@ -19,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('mensajes');
     }
 };
