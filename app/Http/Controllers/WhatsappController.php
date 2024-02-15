@@ -36,6 +36,7 @@ class WhatsappController extends Controller
         // $id = $data['entry'][0]['changes'][0]['value']['messages'][0]['id'];
         // Storage::disk('local')->put('Mensaje_Reicibidos-'.$fecha.'.txt', json_encode($data) );
         $tipo = $data['entry'][0]['changes'][0]['value']['messages'][0]['type'];
+
         if ($tipo == 'audio') {
             $this->audioMensaje($data);
         }elseif($tipo == 'image') {
@@ -359,8 +360,8 @@ class WhatsappController extends Controller
 
 
         $data = array(
-            "prompt" => $mensaje .' ->',
-            "model" => "davinci:ft-personal:apartamentos20octubre-2023-10-20-13-53-04",
+            "prompt" => $mensaje .'',
+            "model" => "davinci-002",
             "temperature" => 0,
             "max_tokens"=> 200,
             "top_p"=> 1,
@@ -380,6 +381,7 @@ class WhatsappController extends Controller
         // Ejecutar la solicitud y obtener la respuesta
         $response = curl_exec($curl);
         curl_close($curl);
+        Storage::disk('local')->put('Respuesta_Peticion_ChatGPT-'.$id.'.txt', $response );
 
         // Procesar la respuesta
         if ($response === false) {
