@@ -444,7 +444,7 @@ class WhatsappController extends Controller
         $response = curl_exec($curl);
         curl_close($curl);
         $responseJson = json_decode($response);
-        Storage::disk('local')->put('response0001.txt', json_encode($response) );
+        Storage::disk('local')->put('Respuesta_Envio_Whatsapp-'.$phone.'.txt', json_encode($response) );
         return $responseJson;
 
     }
