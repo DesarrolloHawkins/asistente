@@ -434,7 +434,16 @@ class WhatsappController extends Controller
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => $mensajePersonalizado,
+            CURLOPT_POSTFIELDS =>'{
+                "messaging_product": "whatsapp",
+                "recipient_type": "individual",
+                "to": "'.$phone.'",
+                "type": "text",
+                "text": {
+                    "preview_url": false,
+                    "body": "'.$texto.'"
+                }
+            }',
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
                 'Authorization: Bearer ' . $token
