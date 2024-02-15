@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Mensaje;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -31,7 +32,7 @@ class WhatsappController extends Controller
     public function processHookWhatsapp(Request $request) {
 
         $data = json_decode($request->getContent(), true);
-        $fecha = Carbon::now()->format('Y-m-d_H-i-s');
+        // $fecha = Carbon::now()->format('Y-m-d_H-i-s');
         // $id = $data['entry'][0]['changes'][0]['value']['messages'][0]['id'];
         // Storage::disk('local')->put('Mensaje_Reicibidos-'.$fecha.'.txt', json_encode($data) );
         $tipo = $data['entry'][0]['changes'][0]['value']['messages'][0]['type'];
@@ -308,89 +309,141 @@ class WhatsappController extends Controller
     {
         $fecha = Carbon::now()->format('Y-m-d_H-i-s');
 
-        Storage::disk('local')->put('Mensaje_Reicibidos-'.$fecha.'.txt', json_encode($data) );
+        Storage::disk('local')->put('Mensaje_Texto_Reicibido-'.$fecha.'.txt', json_encode($data) );
 
         // Whatsapp::create(['mensaje' => json_encode($data)]);
-        // $phone = $data['entry'][0]['changes'][0]['value']['messages'][0]['from'];
-        // $mensaje = $data['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'];
-        // Storage::disk('local')->put('comprobar-'.$id.'.txt', json_encode($data) );
-        // Storage::disk('local')->put('example-'.$id.'.txt', json_encode($data) );
+        $id = $data['entry'][0]['changes'][0]['value']['messages'][0]['id'];
+        $phone = $data['entry'][0]['changes'][0]['value']['messages'][0]['from'];
+        $mensaje = $data['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'];
 
-        //     $mensajeExiste = Mensaje::where('id_mensaje', $data['entry'][0]['changes'][0]['value']['messages'][0]['id'] )->get();
+        $mensajeExiste = Mensaje::where( 'id_mensaje', $id )->get();
+        if (count($mensajeExiste) > 0) {
 
-        //     if (count($mensajeExiste) > 0) {
+        }else {
+            $dataRegistrar = [
+                'id_mensaje' => $id,
+                'id_three' => null,
+                'remitente' => $phone,
+                'mensaje' => $mensaje,
+                'respuesta' => null,
+                'status' => 1,
+                'status_mensaje' => 0,
+                'type' => 'text',
+                'date' => Carbon::now()
+            ];
+            $mensajeCreado = Mensaje::create($dataRegistrar);
 
-        //     }else{
-        //         $dataRegistrar = [
-        //             'id_mensaje' => $data['entry'][0]['changes'][0]['value']['messages'][0]['id'],
-        //             'remitente' => $data['entry'][0]['changes'][0]['value']['contacts'][0]['wa_id'],
-        //             'mensaje' => $data['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'],
-        //             'status' => 1
-        //         ];
+            $reponseChatGPT = $this->chatGpt($mensaje,$id);
+            $respuestaWhatsapp = $this->contestarWhatsapp($phone, $reponseChatGPT['messages']);
+            $mensajeCreado->update([
+                'respuesta'=> $reponseChatGPT['messages']
+            ]);
+            return response(200)->header('Content-Type', 'text/plain');
 
-        //         Mensaje::create($dataRegistrar);
-
-        //         $value = $data['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'];
-
-        //         $reponseChatGPT = $this->chatGpt($value);
-
-        //         Storage::disk('local')->put('response'.$id.'.txt', $reponseChatGPT['messages'] );
-
-        //         $dataRegistrarChat = [
-        //             'id_mensaje' => $data['entry'][0]['changes'][0]['value']['messages'][0]['id'],
-        //             'remitente' => $data['entry'][0]['changes'][0]['value']['contacts'][0]['wa_id'],
-        //             'mensaje' => $data['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'],
-        //             'respuesta' => str_replace('"','',$reponseChatGPT['messages'] ),
-        //             'status' => 1
-        //         ];
-        //         ChatGpt::create( $dataRegistrarChat );
-
-        //         $respuestaWhatsapp = $this->contestarWhatsapp($phone, $reponseChatGPT['messages']);
-
-        //         return response(200)->header('Content-Type', 'text/plain');
-
-        //     }
-        // if (str_word_count($data['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']) > 1) {
-        //     Storage::disk('local')->put('example-'.$id.'.txt', json_encode($data) );
-
-        //     $mensajeExiste = Mensaje::where('id_mensaje', $data['entry'][0]['changes'][0]['value']['messages'][0]['id'] )->get();
-
-        //     if (count($mensajeExiste) > 0) {
-
-        //     }else{
-        //         $dataRegistrar = [
-        //             'id_mensaje' => $data['entry'][0]['changes'][0]['value']['messages'][0]['id'],
-        //             'remitente' => $data['entry'][0]['changes'][0]['value']['contacts'][0]['wa_id'],
-        //             'mensaje' => $data['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'],
-        //             'status' => 1
-        //         ];
-
-        //         Mensaje::create($dataRegistrar);
-
-        //         $value = $data['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'];
-
-        //         $reponseChatGPT = $this->chatGpt($value);
-
-        //         Storage::disk('local')->put('response'.$id.'.txt', $reponseChatGPT['messages'] );
-
-        //         $dataRegistrarChat = [
-        //             'id_mensaje' => $data['entry'][0]['changes'][0]['value']['messages'][0]['id'],
-        //             'remitente' => $data['entry'][0]['changes'][0]['value']['contacts'][0]['wa_id'],
-        //             'mensaje' => $data['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'],
-        //             'respuesta' => str_replace('"','',$reponseChatGPT['messages'] ),
-        //             'status' => 1
-        //         ];
-        //         ChatGpt::create( $dataRegistrarChat );
-
-        //         $respuestaWhatsapp = $this->contestarWhatsapp($phone, $reponseChatGPT['messages']);
-
-        //         return response(200)->header('Content-Type', 'text/plain');
-
-        //     }
-        // }
+        }
     }
 
     public function chatGptPruebas(Request $request) {
+
+    }
+    public function chatGpt($mensaje,$id)
+    {
+
+        $token = env('TOKEN_OPENAI', 'valorPorDefecto');
+        // Configurar los parámetros de la solicitud
+        $url = 'https://api.openai.com/v1/completions';
+        $headers = array(
+            'Content-Type: application/json',
+            'Authorization: Bearer '. $token
+        );
+
+
+        $data = array(
+            "prompt" => $mensaje .' ->',
+            "model" => "davinci:ft-personal:apartamentos20octubre-2023-10-20-13-53-04",
+            "temperature" => 0,
+            "max_tokens"=> 200,
+            "top_p"=> 1,
+            "frequency_penalty"=> 0,
+            "presence_penalty"=> 0,
+            "stop"=> ["_END"]
+        );
+
+        // Inicializar cURL y configurar las opciones
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        // Ejecutar la solicitud y obtener la respuesta
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        // Procesar la respuesta
+        if ($response === false) {
+            $error = [
+            'status' => 'error',
+            'messages' => 'Error al realizar la solicitud'
+            ];
+            Storage::disk('local')->put('errorChapt-'.$id.'.txt', $error['messages'] );
+
+            return response()->json( $error );
+
+        } else {
+            $response_data = json_decode($response, true);
+            // $responseReturn = [
+            // 'status' => 'ok',
+            // 'messages' => $response_data['choices'][0]['text']
+            // ];
+            // Storage::disk('local')->put('respuestaFuncionChapt.txt', $responseReturn['messages'] );
+            return $response_data['choices'][0]['text'];
+
+        }
+    }
+
+    public function contestarWhatsapp($phone, $texto){
+
+        $token = env('WHATSAPP_KEY', 'valorPorDefecto');
+        // return $texto;
+        $mensajePersonalizado = '{
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "to": "'.$phone.'",
+            "type": "text",
+            "text": {
+                "body": "'.$texto.'"
+            }
+        }';
+        // return $mensajePersonalizado;
+
+        $urlMensajes = 'https://graph.facebook.com/v16.0/102360642838173/messages';
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $urlMensajes,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $mensajePersonalizado,
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $token
+            ),
+
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $responseJson = json_decode($response);
+        // Storage::disk('local')->put('response0001.txt', json_encode($response) . json_encode($mensajePersonalizado) );
+        return $responseJson;
 
     }
 
