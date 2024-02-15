@@ -337,7 +337,7 @@ class WhatsappController extends Controller
             $reponseChatGPT = $this->chatGpt($mensaje,$id);
             $respuestaWhatsapp = $this->contestarWhatsapp($phone, $reponseChatGPT);
             $mensajeCreado->update([
-                'respuesta'=> $reponseChatGPT['messages']
+                'respuesta'=> $reponseChatGPT
             ]);
             return response(200)->header('Content-Type', 'text/plain');
 
