@@ -407,7 +407,7 @@ class WhatsappController extends Controller
 
     public function contestarWhatsapp($phone, $texto){
 
-        $token = env('WHATSAPP_KEY', 'valorPorDefecto');
+        $token = env('TOKEN_WHATSAPP', 'valorPorDefecto');
         // return $texto;
         $mensajePersonalizado = '{
             "messaging_product": "whatsapp",
