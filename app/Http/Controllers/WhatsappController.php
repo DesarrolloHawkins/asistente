@@ -360,14 +360,14 @@ class WhatsappController extends Controller
 
 
         $data = array(
-            "prompt" => $mensaje .'',
-            "model" => "davinci-002",
+            "prompt" => $mensaje,
+            "model" => "gpt-3.5-turbo-instruct",
             "temperature" => 0,
             "max_tokens"=> 200,
             "top_p"=> 1,
             "frequency_penalty"=> 0,
             "presence_penalty"=> 0,
-            "stop"=> ["_END"]
+            // "stop"=> ["_END"]
         );
 
         // Inicializar cURL y configurar las opciones
@@ -381,7 +381,6 @@ class WhatsappController extends Controller
         // Ejecutar la solicitud y obtener la respuesta
         $response = curl_exec($curl);
         curl_close($curl);
-        Storage::disk('local')->put('Respuesta_Peticion_ChatGPT-'.$id.'.txt', $response );
 
         // Procesar la respuesta
         if ($response === false) {
@@ -400,6 +399,7 @@ class WhatsappController extends Controller
             // 'messages' => $response_data['choices'][0]['text']
             // ];
             // Storage::disk('local')->put('respuestaFuncionChapt.txt', $responseReturn['messages'] );
+            Storage::disk('local')->put('Respuesta_Peticion_ChatGPT-'.$id.'.txt', $response );
             return $response_data['choices'][0]['text'];
 
         }
