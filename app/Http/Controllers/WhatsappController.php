@@ -420,7 +420,7 @@ class WhatsappController extends Controller
         }';
         // return $mensajePersonalizado;
 
-        $urlMensajes = 'https://graph.facebook.com/v19.0/102360642838173/messages';
+        $urlMensajes = 'https://graph.facebook.com/v18.0/259025510617476/messages';
 
         $curl = curl_init();
 
