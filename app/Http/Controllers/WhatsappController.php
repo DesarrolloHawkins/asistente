@@ -420,7 +420,7 @@ class WhatsappController extends Controller
         }';
         // return $mensajePersonalizado;
 
-        $urlMensajes = 'https://graph.facebook.com/v16.0/102360642838173/messages';
+        $urlMensajes = 'https://graph.facebook.com/v19.0/102360642838173/messages';
 
         $curl = curl_init();
 
@@ -444,7 +444,7 @@ class WhatsappController extends Controller
         $response = curl_exec($curl);
         curl_close($curl);
         $responseJson = json_decode($response);
-        // Storage::disk('local')->put('response0001.txt', json_encode($response) . json_encode($mensajePersonalizado) );
+        Storage::disk('local')->put('response0001.txt', json_encode($response) );
         return $responseJson;
 
     }
