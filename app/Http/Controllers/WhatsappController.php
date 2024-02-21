@@ -360,14 +360,14 @@ class WhatsappController extends Controller
 
 
         $data = array(
-            "prompt" => $mensaje,
-            "model" => "gpt-3.5-turbo-instruct",
+            "prompt" => $mensaje . ' ->',
+            "model" => "davinci:ft-personal:apartamentos20octubre-2023-10-20-13-53-04",
             "temperature" => 0,
             "max_tokens"=> 200,
             "top_p"=> 1,
             "frequency_penalty"=> 0,
             "presence_penalty"=> 0,
-            // "stop"=> ["_END"]
+            "stop"=> ["_END"]
         );
 
         // Inicializar cURL y configurar las opciones
@@ -421,7 +421,7 @@ class WhatsappController extends Controller
         }';
         // return $mensajePersonalizado;
 
-        $urlMensajes = 'https://graph.facebook.com/v19.0/259025510617476/messages';
+        $urlMensajes = 'https://graph.facebook.com/v18.0/102360642838173/messages';
 
         $curl = curl_init();
 
@@ -434,16 +434,7 @@ class WhatsappController extends Controller
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS =>'{
-                "messaging_product": "whatsapp",
-                "recipient_type": "individual",
-                "to": "'.$phone.'",
-                "type": "text",
-                "text": {
-                    "preview_url": false,
-                    "body": "'.$texto.'"
-                }
-            }',
+            CURLOPT_POSTFIELDS => $mensajePersonalizado,
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
                 'Authorization: Bearer ' . $token
@@ -454,9 +445,9 @@ class WhatsappController extends Controller
         $response = curl_exec($curl);
         curl_close($curl);
         $responseJson = json_decode($response);
+
         Storage::disk('local')->put('Respuesta_Envio_Whatsapp-'.$phone.'.txt', json_encode($response) );
         return $responseJson;
-
     }
 
 }
