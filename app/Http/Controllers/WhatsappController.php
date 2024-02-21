@@ -361,8 +361,10 @@ class WhatsappController extends Controller
 
 
         $data = array(
-            "prompt" => $mensaje . ' ->',
-            "model" => "davinci:ft-personal:apartamentos20octubre-2023-10-20-13-53-04",
+            "prompt" => $mensaje,
+            // "prompt" => $mensaje . ' ->',
+            // "model" => "davinci:ft-personal:apartamentos20octubre-2023-10-20-13-53-04",
+            "model" => "ft:davinci-002:personal::8saidOxu",
             "temperature" => 0,
             "max_tokens"=> 200,
             "top_p"=> 1,
