@@ -362,24 +362,24 @@ class WhatsappController extends Controller
         // Independientemente de si el hilo es nuevo o existente, inicia la ejecución
         $hilo = $this->mensajeHilo($mensajeExiste->id_three, $mensaje);
         $ejecuccion = $this->ejecutarHilo($three_id['id']);
-        //dd($ejecuccion);
+        $ejecuccionStatus = $this->ejecutarHiloStatus($three_id['id'], $hilo['id']);
         // Inicia un bucle para esperar hasta que el hilo se complete
         while (true) {
-            $ejecuccion = $this->ejecutarHilo($three_id['id']);
+            //$ejecuccion = $this->ejecutarHilo($three_id['id']);
 
-            if ($ejecuccion['status'] === 'in_progress') {
+            if ($ejecuccionStatus['status'] === 'in_progress') {
                 // Espera activa antes de verificar el estado nuevamente
                 sleep(5); // Ajusta este valor según sea necesario
 
                 // Verifica el estado del paso actual del hilo
-                $pasosHilo = $this->ejecutarHiloID($mensajeExiste->id_three, $hilo['id']);
+                $pasosHilo = $this->ejecutarHiloISteeps($three_id['id'], $hilo['id']);
                 if ($pasosHilo['data'][0]['status'] === 'completed') {
                     // Si el paso se completó, verifica el estado general del hilo
-                    $ejecuccion = $this->ejecutarHilo($hilo['id']);
+                    $ejecuccionStatus = $this->ejecutarHiloStatus($three_id['id'],$hilo['id']);
                 }
             } elseif ($ejecuccion['status'] === 'completed') {
                 // El hilo ha completado su ejecución, obtiene la respuesta final
-                $hilo = $this->mensajeHilo($mensajeExiste->id_three, $mensaje);
+                $hilo = $this->listarMensajes($three_id['id']);
                 if(count($hilo['data']) > 0){
                     return $hilo['data'][0]['content'][0]['text']['value'];
                 }
@@ -540,10 +540,75 @@ class WhatsappController extends Controller
             return $response_data;
         }
     }
-
-    public function ejecutarHiloID($id_thread, $id_runs){
+    public function ejecutarHiloStatus($id_thread, $id_runs){
         $token = env('TOKEN_OPENAI', 'valorPorDefecto');
         $url = 'https://api.openai.com/v1/threads/'. $id_thread .'/runs/'.$id_runs;
+
+        $headers = array(
+            'Authorization: Bearer '. $token,
+            "OpenAI-Beta: assistants=v1"
+        );
+
+        // Inicializar cURL y configurar las opciones
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, false);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        // Ejecutar la solicitud y obtener la respuesta
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        // Procesar la respuesta
+        if ($response === false) {
+            $error = [
+            'status' => 'error',
+            'messages' => 'Error al realizar la solicitud'
+            ];
+
+        } else {
+            $response_data = json_decode($response, true);
+            return $response_data;
+        }
+    }
+
+    public function ejecutarHiloISteeps($id_thread, $id_runs){
+        $token = env('TOKEN_OPENAI', 'valorPorDefecto');
+        $url = 'https://api.openai.com/v1/threads/'.$id_thread. '/runs/' .$id_runs. '/steps';
+
+        $headers = array(
+            'Authorization: Bearer '. $token,
+            "OpenAI-Beta: assistants=v1"
+        );
+
+        // Inicializar cURL y configurar las opciones
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, false);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        // Ejecutar la solicitud y obtener la respuesta
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        // Procesar la respuesta
+        if ($response === false) {
+            $error = [
+            'status' => 'error',
+            'messages' => 'Error al realizar la solicitud'
+            ];
+
+        } else {
+            $response_data = json_decode($response, true);
+            return $response_data;
+        }
+    }
+
+    public function listarMensajes($id_thread){
+        $token = env('TOKEN_OPENAI', 'valorPorDefecto');
+        $url = 'https://api.openai.com/v1/threads/'. $id_thread .'/messages';
 
         $headers = array(
             'Authorization: Bearer '. $token,
