@@ -335,11 +335,13 @@ class WhatsappController extends Controller
             $mensajeCreado = Mensaje::create($dataRegistrar);
 
             $reponseChatGPT = $this->chatGpt($mensaje,$id);
+            return response($reponseChatGPT)->header('Content-Type', 'text/plain');
+
             $respuestaWhatsapp = $this->contestarWhatsapp($phone, $reponseChatGPT);
             $mensajeCreado->update([
                 'respuesta'=> $reponseChatGPT
             ]);
-            return response(200)->header('Content-Type', 'text/plain');
+            return response($reponseChatGPT)->header('Content-Type', 'text/plain');
 
         }
     }
@@ -353,7 +355,7 @@ class WhatsappController extends Controller
         $mensajeExiste = Mensaje::where( 'id_mensaje', $id )->first();
         if ($mensajeExiste->id_three === null) {
             $three_id = $this->crearHilo();
-            $mensajeExiste->id_three = $three_id;
+            $mensajeExiste->id_three = $three_id['id'];
             $mensajeExiste->save();
 
             return $this->mensajeHilo($three_id, $mensaje);
