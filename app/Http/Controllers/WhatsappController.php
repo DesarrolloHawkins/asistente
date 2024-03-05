@@ -356,7 +356,7 @@ class WhatsappController extends Controller
             $mensajeExiste->id_three = $three_id;
             $mensajeExiste->save();
 
-            return $this->mensajeHilo($three_id, $mensajeExiste->mensaje);
+            return $this->mensajeHilo($three_id, $mensaje);
         }else {
 
         }
