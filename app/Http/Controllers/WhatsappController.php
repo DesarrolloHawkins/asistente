@@ -337,6 +337,9 @@ class WhatsappController extends Controller
             $reponseChatGPT = $this->chatGpt($mensaje,$id);
 
             $respuestaWhatsapp = $this->contestarWhatsapp($phone, $reponseChatGPT);
+            if(isset($respuestaWhatsapp['error'])){
+                dd($respuestaWhatsapp);
+            }
             $mensajeCreado->update([
                 'respuesta'=> $reponseChatGPT
             ]);
@@ -362,7 +365,8 @@ class WhatsappController extends Controller
         // Independientemente de si el hilo es nuevo o existente, inicia la ejecución
         $hilo = $this->mensajeHilo($mensajeExiste->id_three, $mensaje);
         $ejecuccion = $this->ejecutarHilo($three_id['id']);
-        $ejecuccionStatus = $this->ejecutarHiloStatus($three_id['id'], $hilo['id']);
+        $ejecuccionStatus = $this->ejecutarHiloStatus($three_id['id'], $ejecuccion['id']);
+        //dd($ejecuccionStatus);
         // Inicia un bucle para esperar hasta que el hilo se complete
         while (true) {
             //$ejecuccion = $this->ejecutarHilo($three_id['id']);
@@ -372,24 +376,25 @@ class WhatsappController extends Controller
                 sleep(5); // Ajusta este valor según sea necesario
 
                 // Verifica el estado del paso actual del hilo
-                $pasosHilo = $this->ejecutarHiloISteeps($three_id['id'], $hilo['id']);
+                $pasosHilo = $this->ejecutarHiloISteeps($three_id['id'], $ejecuccion['id']);
                 if ($pasosHilo['data'][0]['status'] === 'completed') {
                     // Si el paso se completó, verifica el estado general del hilo
-                    $ejecuccionStatus = $this->ejecutarHiloStatus($three_id['id'],$hilo['id']);
+                    $ejecuccionStatus = $this->ejecutarHiloStatus($three_id['id'],$ejecuccion['id']);
                 }
-            } elseif ($ejecuccion['status'] === 'completed') {
+            } elseif ($ejecuccionStatus['status'] === 'completed') {
                 // El hilo ha completado su ejecución, obtiene la respuesta final
-                $hilo = $this->listarMensajes($three_id['id']);
-                if(count($hilo['data']) > 0){
-                    return $hilo['data'][0]['content'][0]['text']['value'];
+                $mensajes = $this->listarMensajes($three_id['id']);
+				//dd($mensajes);
+                if(count($mensajes['data']) > 0){
+                    return $mensajes['data'][0]['content'][0]['text']['value'];
                 }
             } else {
                 // Maneja otros estados, por ejemplo, errores
+				dd($ejecuccionStatus);
                 break; // Sale del bucle si se encuentra un estado inesperado
             }
         }
     }
-
 
     public function crearHilo(){
         $token = env('TOKEN_OPENAI', 'valorPorDefecto');
@@ -639,27 +644,25 @@ class WhatsappController extends Controller
         }
     }
 
-    public function contestarWhatsapp($phone, $texto){
-
+    public function contestarWhatsapp($phone, $texto)
+    {
         $token = env('TOKEN_WHATSAPP', 'valorPorDefecto');
-        // return $texto;
-        $mensajePersonalizado = '{
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": "'.$phone.'",
-            "type": "text",
-            "text": {
-                "preview_url": false,
-                "body": "'.$texto.'"
-            }
-        }';
-        // return $mensajePersonalizado;
-
         $urlMensajes = 'https://graph.facebook.com/v18.0/254315494430032/messages';
+
+        $mensajePersonalizado = [
+            "messaging_product" => "whatsapp",
+            "recipient_type" => "individual",
+            "to" => $phone,
+            "type" => "text",
+            "text" => [
+                "preview_url" => false,
+                "body" => $texto
+            ]
+        ];
 
         $curl = curl_init();
 
-        curl_setopt_array($curl, array(
+        curl_setopt_array($curl, [
             CURLOPT_URL => $urlMensajes,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
@@ -668,20 +671,20 @@ class WhatsappController extends Controller
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => $mensajePersonalizado,
-            CURLOPT_HTTPHEADER => array(
+            CURLOPT_POSTFIELDS => json_encode($mensajePersonalizado),
+            CURLOPT_HTTPHEADER => [
                 'Content-Type: application/json',
                 'Authorization: Bearer ' . $token
-            ),
-
-        ));
+            ],
+        ]);
 
         $response = curl_exec($curl);
         curl_close($curl);
-        $responseJson = json_decode($response);
+        $responseJson = json_decode($response, true);
 
-        Storage::disk('local')->put('Respuesta_Envio_Whatsapp-'.$phone.'.txt', json_encode($response) );
+        Storage::disk('local')->put('Respuesta_Envio_Whatsapp-'.$phone.'.txt', json_encode($response));
         return $responseJson;
     }
+
 
 }
