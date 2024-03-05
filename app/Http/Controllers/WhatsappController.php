@@ -350,34 +350,68 @@ class WhatsappController extends Controller
     public function chatGpt($mensaje,$id)
     {
 
+        $mensajeExiste = Mensaje::where( 'id_mensaje', $id )->get();
+        if ($mensajeExiste->id_three === null) {
+            $three_id = $this->crearHilo();
+            $mensajeExiste->id_three = $three_id;
+            $mensajeExiste->save();
+
+            return $this->mensajeHilo($three_id, $mensajeExiste->mensaje);
+        }else {
+
+        }
+    }
+
+    public function crearHilo(){
         $token = env('TOKEN_OPENAI', 'valorPorDefecto');
-        // Configurar los parámetros de la solicitud
-        $url = 'https://api.openai.com/v1/completions';
+        $url = 'https://api.openai.com/v1/threads';
 
         $headers = array(
             'Content-Type: application/json',
-            'Authorization: Bearer '. $token
-        );
-
-
-        $data = array(
-            // "prompt" => $mensaje . ' ->',
-            // "model" => "davinci:ft-personal:apartamentos20octubre-2023-10-20-13-53-04",
-            "prompt" => $mensaje,
-            "model" => "ft:davinci-002:personal::8saidOxu",
-            "temperature" => 0,
-            "max_tokens"=> 200,
-            "top_p"=> 1,
-            "frequency_penalty"=> 0,
-            "presence_penalty"=> 0,
-            "stop"=> ["_END"]
+            'Authorization: Bearer '. $token,
+            "OpenAI-Beta: assistants=v1"
         );
 
         // Inicializar cURL y configurar las opciones
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        // Ejecutar la solicitud y obtener la respuesta
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        // Procesar la respuesta
+        if ($response === false) {
+            $response_data = json_decode($response, true);
+            $error = [
+            'status' => 'error',
+            'messages' => 'Error al realizar la solicitud: '.$response_data
+            ];
+            return $error;
+
+        } else {
+            $response_data = json_decode($response, true);
+            //Storage::disk('local')->put('Respuesta_Peticion_ChatGPT-'.$id.'.txt', $response );
+            return $response_data;
+        }
+    }
+    public function recuperarHilo($id_thread){
+        $token = env('TOKEN_OPENAI', 'valorPorDefecto');
+        $url = 'https://api.openai.com/v1/threads/'.$id_thread;
+
+        $headers = array(
+            'Content-Type: application/json',
+            'Authorization: Bearer '. $token,
+            "OpenAI-Beta: assistants=v1"
+        );
+
+        // Inicializar cURL y configurar las opciones
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
@@ -391,20 +425,54 @@ class WhatsappController extends Controller
             'status' => 'error',
             'messages' => 'Error al realizar la solicitud'
             ];
-            Storage::disk('local')->put('errorChapt-'.$id.'.txt', $error['messages'] );
-
-            return response()->json( $error );
 
         } else {
             $response_data = json_decode($response, true);
-            // $responseReturn = [
-            // 'status' => 'ok',
-            // 'messages' => $response_data['choices'][0]['text']
-            // ];
-            // Storage::disk('local')->put('respuestaFuncionChapt.txt', $responseReturn['messages'] );
             Storage::disk('local')->put('Respuesta_Peticion_ChatGPT-'.$id.'.txt', $response );
-            return $response_data['choices'][0]['text'];
+            return $response_data;
+        }
+    }
 
+    public function mensajeHilo($id_thread, $pregunta){
+        $token = env('TOKEN_OPENAI', 'valorPorDefecto');
+        $url = 'https://api.openai.com/v1/threads';
+
+        $headers = array(
+            'Content-Type: application/json',
+            'Authorization: Bearer '. $token,
+            "OpenAI-Beta: assistants=v1"
+        );
+        $body = [
+            "role" => "user",
+            "content" => $pregunta
+        ];
+
+        // Inicializar cURL y configurar las opciones
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS,$body);
+
+
+        // Ejecutar la solicitud y obtener la respuesta
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        // Procesar la respuesta
+        if ($response === false) {
+            $response_data = json_decode($response, true);
+            $error = [
+            'status' => 'error',
+            'messages' => 'Error al realizar la solicitud: '.$response_data
+            ];
+            return $error;
+
+        } else {
+            $response_data = json_decode($response, true);
+            //Storage::disk('local')->put('Respuesta_Peticion_ChatGPT-'.$id.'.txt', $response );
+            return $response_data;
         }
     }
 
