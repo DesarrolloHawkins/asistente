@@ -348,20 +348,46 @@ class WhatsappController extends Controller
     public function chatGptPruebas(Request $request) {
 
     }
-    public function chatGpt($mensaje,$id)
+    public function chatGpt($mensaje, $id)
     {
+        $mensajeExiste = Mensaje::where('id_mensaje', $id)->first();
 
-        $mensajeExiste = Mensaje::where( 'id_mensaje', $id )->first();
         if ($mensajeExiste->id_three === null) {
+            // Crear un nuevo hilo si no existe
             $three_id = $this->crearHilo();
             $mensajeExiste->id_three = $three_id['id'];
             $mensajeExiste->save();
+        }
 
-            return $this->mensajeHilo($three_id, $mensaje);
-        }else {
+        // Independientemente de si el hilo es nuevo o existente, inicia la ejecución
+        $hilo = $this->mensajeHilo($mensajeExiste->id_three, $mensaje);
+        $ejecuccion = $this->ejecutarHilo($hilo['id']);
 
+        // Inicia un bucle para esperar hasta que el hilo se complete
+        while (true) {
+            if ($ejecuccion['status'] === 'in_progress') {
+                // Espera activa antes de verificar el estado nuevamente
+                sleep(5); // Ajusta este valor según sea necesario
+
+                // Verifica el estado del paso actual del hilo
+                $pasosHilo = $this->ejecutarHiloID($mensajeExiste->id_three, $hilo['id']);
+                if ($pasosHilo['data'][0]['status'] === 'completed') {
+                    // Si el paso se completó, verifica el estado general del hilo
+                    $ejecuccion = $this->ejecutarHilo($hilo['id']);
+                }
+            } elseif ($ejecuccion['status'] === 'completed') {
+                // El hilo ha completado su ejecución, obtiene la respuesta final
+                $hilo = $this->mensajeHilo($mensajeExiste->id_three, $mensaje);
+                if(count($hilo['data']) > 0){
+                    return $hilo['data'][0]['content'][0]['text']['value'];
+                }
+            } else {
+                // Maneja otros estados, por ejemplo, errores
+                break; // Sale del bucle si se encuentra un estado inesperado
+            }
         }
     }
+
 
     public function crearHilo(){
         $token = env('TOKEN_OPENAI', 'valorPorDefecto');
@@ -433,10 +459,45 @@ class WhatsappController extends Controller
             return $response_data;
         }
     }
+    public function ejecutarHilo($id_thread){
+        $token = env('TOKEN_OPENAI', 'valorPorDefecto');
+        $url = 'https://api.openai.com/v1/threads/'.$id_thread.'/runs';
 
+        $headers = array(
+            'Content-Type: application/json',
+            'Authorization: Bearer '. $token,
+            "OpenAI-Beta: assistants=v1"
+        );
+
+        $body = [
+            "assistant_id" => 'asst_J1rG3DRZ1X2mV7t81kHZ9vfj'
+        ];
+        // Inicializar cURL y configurar las opciones
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        // Ejecutar la solicitud y obtener la respuesta
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        // Procesar la respuesta
+        if ($response === false) {
+            $error = [
+            'status' => 'error',
+            'messages' => 'Error al realizar la solicitud'
+            ];
+
+        } else {
+            $response_data = json_decode($response, true);
+            return $response_data;
+        }
+    }
     public function mensajeHilo($id_thread, $pregunta){
         $token = env('TOKEN_OPENAI', 'valorPorDefecto');
-        $url = 'https://api.openai.com/v1/threads';
+        $url = 'https://api.openai.com/v1/threads/'.$id_thread.'/messages';
 
         $headers = array(
             'Content-Type: application/json',
@@ -454,7 +515,7 @@ class WhatsappController extends Controller
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS,$body);
+        curl_setopt($curl, CURLOPT_POSTFIELDS,json_encode($body));
 
 
         // Ejecutar la solicitud y obtener la respuesta
@@ -473,6 +534,39 @@ class WhatsappController extends Controller
         } else {
             $response_data = json_decode($response, true);
             //Storage::disk('local')->put('Respuesta_Peticion_ChatGPT-'.$id.'.txt', $response );
+            return $response_data;
+        }
+    }
+
+    public function ejecutarHiloID($id_thread, $id_runs){
+        $token = env('TOKEN_OPENAI', 'valorPorDefecto');
+        $url = 'https://api.openai.com/v1/threads/'. $id_thread .'/runs/'.$id_runs;
+
+        $headers = array(
+            'Authorization: Bearer '. $token,
+            "OpenAI-Beta: assistants=v1"
+        );
+
+        // Inicializar cURL y configurar las opciones
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, false);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        // Ejecutar la solicitud y obtener la respuesta
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        // Procesar la respuesta
+        if ($response === false) {
+            $error = [
+            'status' => 'error',
+            'messages' => 'Error al realizar la solicitud'
+            ];
+
+        } else {
+            $response_data = json_decode($response, true);
             return $response_data;
         }
     }
