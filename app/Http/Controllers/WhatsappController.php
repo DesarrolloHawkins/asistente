@@ -350,7 +350,7 @@ class WhatsappController extends Controller
     public function chatGpt($mensaje,$id)
     {
 
-        $mensajeExiste = Mensaje::where( 'id_mensaje', $id )->get();
+        $mensajeExiste = Mensaje::where( 'id_mensaje', $id )->first();
         if ($mensajeExiste->id_three === null) {
             $three_id = $this->crearHilo();
             $mensajeExiste->id_three = $three_id;
