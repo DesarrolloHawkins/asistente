@@ -361,9 +361,9 @@ class WhatsappController extends Controller
 
 
         $data = array(
-            "prompt" => $mensaje,
             // "prompt" => $mensaje . ' ->',
             // "model" => "davinci:ft-personal:apartamentos20octubre-2023-10-20-13-53-04",
+            "prompt" => $mensaje,
             "model" => "ft:davinci-002:personal::8saidOxu",
             "temperature" => 0,
             "max_tokens"=> 200,
@@ -424,7 +424,7 @@ class WhatsappController extends Controller
         }';
         // return $mensajePersonalizado;
 
-        $urlMensajes = 'https://graph.facebook.com/v18.0/259025510617476/messages';
+        $urlMensajes = 'https://graph.facebook.com/v18.0/254315494430032/messages';
 
         $curl = curl_init();
 
