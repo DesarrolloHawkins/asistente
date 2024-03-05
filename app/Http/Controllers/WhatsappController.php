@@ -361,8 +361,8 @@ class WhatsappController extends Controller
 
         // Independientemente de si el hilo es nuevo o existente, inicia la ejecución
         $hilo = $this->mensajeHilo($mensajeExiste->id_three, $mensaje);
-        $ejecuccion = $this->ejecutarHilo($hilo['id']);
-
+        $ejecuccion = $this->ejecutarHilo($three_id['id']);
+        dd($ejecuccion);
         // Inicia un bucle para esperar hasta que el hilo se complete
         while (true) {
             if ($ejecuccion['status'] === 'in_progress') {
