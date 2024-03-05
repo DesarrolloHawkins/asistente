@@ -478,6 +478,7 @@ class WhatsappController extends Controller
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS,json_encode($body));
 
         // Ejecutar la solicitud y obtener la respuesta
         $response = curl_exec($curl);
