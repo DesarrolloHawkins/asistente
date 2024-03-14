@@ -132,6 +132,24 @@
           position: relative;
           animation: fadeIn 1s ease-in;
         }
+        .chat-bubble2 {
+          padding: 10px 14px;
+          background: #bfe5ff;
+          margin: 10px 30px;
+          border-radius: 9px;
+          position: relative;
+          animation: fadeIn 1s ease-in;
+        }
+        .chat-bubble2:after {
+          content: "";
+          position: absolute;
+          top: 50%;
+          width: 0;
+          height: 0;
+          border: 20px solid transparent;
+          border-bottom: 0;
+          margin-top: -10px;
+        }
         .chat-bubble:after {
           content: "";
           position: absolute;
@@ -151,6 +169,12 @@
         .chat-bubble--right:after {
           right: 0;
           border-left-color: #74b9ff;
+          border-right: 0;
+          margin-right: -20px;
+        }
+        .chat-bubble2--right:after {
+          right: 0;
+          border-left-color: #bfe5ff;
           border-right: 0;
           margin-right: -20px;
         }
@@ -384,7 +408,7 @@
                 var templateChatRespuesta = `
                 <div class="row no-gutters" style="justify-content: end;">
                     <div class="col-md-6">
-                        <div class="chat-bubble chat-bubble--right" >
+                        <div class="chat-bubble2 chat-bubble2--right" >
                             ${unicodeToChar(value.respuesta)}
                             <p class="fecha_mensaje"><small>
                             ${value.created_at}
