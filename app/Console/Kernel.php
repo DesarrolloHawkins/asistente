@@ -23,11 +23,11 @@ class Kernel extends ConsoleKernel
             $hoy = Carbon::now();
             // Obtenemos la reservas que sean igual o superior a la fecha de entrada de hoy y no tengan el DNI Enrtegado.
             $clientes = Client::where('send', null)
-            ->where('id', 13)
+            // ->where('id', 13)
             ->orderBy('id', 'asc')
             // ->where('estado_id', 1)
             // ->where('fecha_entrada', '>=', $hoy->toDateString())
-            // ->take(10)
+            ->take(10)
             ->get();
 
             foreach($clientes as $client){
