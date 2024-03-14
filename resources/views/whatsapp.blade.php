@@ -305,7 +305,7 @@
         $( '.friend-drawer--onhover' ).on( 'click',  function() {
             var remitenteId = $(this).attr('data-id'); // Obtén el ID del remitente del atributo data-id.
             var nombreRemitente;
-            data.map(function(item){
+            data.forEach(function(item){
                 item.remitente == remitenteId ? nombreRemitente = item.nombre_remitente : ''
             })
 
