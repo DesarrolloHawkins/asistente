@@ -301,6 +301,7 @@
         var data = @json($resultado);
         var datas = JSON.stringify(data)
         console.log(data)
+        console.log(datas)
 
         $( '.friend-drawer--onhover' ).on( 'click',  function() {
             var remitenteId = $(this).attr('data-id'); // Obtén el ID del remitente del atributo data-id.
