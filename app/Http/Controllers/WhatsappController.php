@@ -462,7 +462,7 @@ class WhatsappController extends Controller
 
         } else {
             $response_data = json_decode($response, true);
-            Storage::disk('local')->put('Respuesta_Peticion_ChatGPT-'.$id.'.txt', $response );
+            // Storage::disk('local')->put('Respuesta_Peticion_ChatGPT-'.$id.'.txt', $response );
             return $response_data;
         }
     }
@@ -686,5 +686,76 @@ class WhatsappController extends Controller
         return $responseJson;
     }
 
+    public function autoMensajeWhatsappTemplate($phone, $client, $template)
+    {
+        $token = env('TOKEN_WHATSAPP', 'valorPorDefecto');
+        $urlMensajes = 'https://graph.facebook.com/v18.0/254315494430032/messages';
+
+        $mensajePersonalizado = [
+            "messaging_product" => "whatsapp",
+            "recipient_type" => "individual",
+            "to" => $phone,
+            "type" => "template",
+            "template" => [
+                "name" => $template,
+                // "name" => 'cliente-vip',
+                "language" => [
+                    "code" => 'es_ES'
+                ],
+                "components" => [
+                    [
+                        "type" => 'body',
+                        "parameters" => [
+                            ["type" => "text", "text" => $client],
+                        ],
+                    ]
+                ]
+            ]
+        ];
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $urlMensajes,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => json_encode($mensajePersonalizado),
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $token
+            ],
+        ]);
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $responseJson = json_decode($response, true);
+
+        // Storage::disk('local')->put('Respuesta_Envio_Whatsapp-'.$phone.'.txt', json_encode($response));
+        return $responseJson;
+    }
+
+
+
+    // Vista de los mensajes
+    public function whatsapp()
+    {
+        // $mensajes = Mensaje::all();
+        $mensajes = Mensaje::orderBy('created_at', 'desc')->get();
+        $resultado = [];
+        foreach ($mensajes as $elemento) {
+            $resultado[$elemento['remitente']][] = $elemento;
+
+
+        }
+        // dd($resultado);
+
+        // var_dump(var_export($result, true));
+        return view('whatsapp.index', compact('resultado'));
+    }
 
 }
