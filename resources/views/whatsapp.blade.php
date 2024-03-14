@@ -393,7 +393,8 @@
                         </div>
                     </div>`
               }else {
-                var templateChat = `
+                if (value.mensaje != null) {
+                    var templateChat = `
                     <div class="row no-gutters">
                         <div class="col-md-6">
                             <div class="chat-bubble chat-bubble--left">
@@ -406,7 +407,8 @@
                             </div>
                         </div>
                     </div>`
-              }
+                }
+
 
               if (value.respuesta != null) {
                 var templateChatRespuesta = `

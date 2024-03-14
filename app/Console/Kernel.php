@@ -3,10 +3,12 @@
 namespace App\Console;
 
 use App\Models\Client;
+use App\Models\Mensaje;
 use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class Kernel extends ConsoleKernel
 {
@@ -21,15 +23,30 @@ class Kernel extends ConsoleKernel
             $hoy = Carbon::now();
             // Obtenemos la reservas que sean igual o superior a la fecha de entrada de hoy y no tengan el DNI Enrtegado.
             $clientes = Client::where('send', null)
+            ->where('id', 13)
             ->orderBy('id', 'asc')
             // ->where('estado_id', 1)
             // ->where('fecha_entrada', '>=', $hoy->toDateString())
-            ->take(10)
+            // ->take(10)
             ->get();
 
-            // foreach($clientes as $client){
-            //     $this->autoMensajeWhatsappTemplate($client->phone, $client->name, 'clientes_vip');
-            // }
+            foreach($clientes as $client){
+                $envioMensaje = $this->autoMensajeWhatsappTemplate('34'.$client->phone, $client->name, 'clientes_vip');
+                $id = $envioMensaje['entry'][0]['changes'][0]['value']['messages'][0]['id'];
+
+                $dataRegistrar = [
+                    'id_mensaje' => $id,
+                    'id_three' => null,
+                    'remitente' => '34'.$client->phone,
+                    'mensaje' => null,
+                    'respuesta' => null,
+                    'status' => 1,
+                    'status_mensaje' => 0,
+                    'type' => 'text',
+                    'date' => Carbon::now()
+                ];
+                $mensajeCreado = Mensaje::create($dataRegistrar);
+            }
             Log::info("Tarea programada de Envio Mesanje ClienteVip auto al cliente ejecutada con éxito.");
         })->everyMinute();
     }
@@ -93,7 +110,7 @@ class Kernel extends ConsoleKernel
         curl_close($curl);
         $responseJson = json_decode($response, true);
 
-        // Storage::disk('local')->put('Respuesta_Envio_Whatsapp-'.$phone.'.txt', json_encode($response));
+        Storage::disk('local')->put('Respuesta_Envio_Whatsapp-'.$phone.'.txt', json_encode($response));
         return $responseJson;
     }
 }
