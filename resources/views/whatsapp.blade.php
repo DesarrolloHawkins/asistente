@@ -251,7 +251,7 @@
         overflow-y: scroll;
         height: 85%;
         padding-bottom: 2rem;
-        background-image: url(https://i.pinimg.com/originals/85/70/f6/8570f63….jpg);
+        background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
         }
 
         .no-gutters {
