@@ -301,14 +301,14 @@
         var data = @json($resultado);
         var datas = JSON.stringify(data)
         console.log(data)
-        console.log(datas)
+        // console.log(datas)
 
         $( '.friend-drawer--onhover' ).on( 'click',  function() {
             var remitenteId = $(this).attr('data-id'); // Obtén el ID del remitente del atributo data-id.
-            var nombreRemitente;
-            data.forEach(function(item){
-                item.remitente == remitenteId ? nombreRemitente = item.nombre_remitente : ''
-            })
+            var nombreRemitente = data[remitenteId][0]['nombre_remitente'];
+            // data.forEach(function(item){
+            //     item.remitente == remitenteId ? nombreRemitente = item.nombre_remitente : ''
+            // })
 
             var template = `
             <div class="settings-tray">
