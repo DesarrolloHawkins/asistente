@@ -755,7 +755,7 @@ class WhatsappController extends Controller
         // dd($resultado);
 
         // var_dump(var_export($result, true));
-        return view('whatsapp.index', compact('resultado'));
+        return view('whatsapp', compact('resultado'));
     }
 
 }
