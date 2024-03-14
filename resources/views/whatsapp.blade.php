@@ -348,12 +348,13 @@
                 $('#chat-mensajes').append(templateChatRespuesta)
             })
 
-            var templateFinal = '</div></div>'
+            var templateFinal = '</div></div></div>'
+
             $('#chat-mensajes').append(templateFinal)
 
-            console.log(dataMensaje)
-            console.log($(this).attr('data-id'))
-            console.log(data['34622440984'])
+            // console.log(dataMensaje)
+            // console.log($(this).attr('data-id'))
+            // console.log(data['34622440984'])
 
             // $( '.chat-bubble' ).hide('slow').show('slow');
 
