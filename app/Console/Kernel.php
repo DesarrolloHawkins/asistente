@@ -92,7 +92,7 @@ class Kernel extends ConsoleKernel
         $mensajePersonalizado = [
             "messaging_product" => "whatsapp",
             "recipient_type" => "individual",
-            "to" => '34'.$phone,
+            "to" => $phone,
             "type" => "template",
             "template" => [
                 "name" => $template,
