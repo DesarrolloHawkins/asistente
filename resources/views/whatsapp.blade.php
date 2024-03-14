@@ -189,6 +189,37 @@
         .chat-box-tray i:last-of-type {
           margin-left: 25px;
         }
+        html, body {
+        height: 100%;
+        margin: 0;
+        }
+
+        body {
+        background-color: #3498db;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        }
+
+        .container {
+        height: 100vh; /* Ajusta el contenedor al 100% de la altura de la ventana */
+        max-width: 100vw; /* Asegura que el ancho no se desborde */
+        overflow: hidden; /* Evita cualquier desbordamiento del contenedor */
+        display: flex; /* Habilita la disposición flexible de los elementos internos */
+        flex-direction: column; /* Organiza los elementos internos verticalmente */
+        }
+
+        .col-md-4.border-right, .chat-panel {
+        overflow-y: auto; /* Habilita desplazamiento vertical si es necesario */
+        }
+
+        .col-md-4.border-right {
+        height: 100%; /* Asegura que este div use todo el alto disponible */
+        }
+
+        .chat-panel {
+        flex-grow: 1; /* Permite que este div ocupe el espacio restante */
+        }
 
     </style>
 
@@ -250,6 +281,7 @@
 
         </div>
       </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <script>
