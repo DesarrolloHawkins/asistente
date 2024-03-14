@@ -300,7 +300,7 @@
         // Video tutorial/codealong here: https://youtu.be/fCpw5i_2IYU
         var data = @json($resultado);
         var datas = JSON.stringify(data)
-        console.log(data)
+        // console.log(data)
         // console.log(datas)
 
         $( '.friend-drawer--onhover' ).on( 'click',  function() {
@@ -352,7 +352,7 @@
               return date1 - date2;
             })
 
-            console.log(sortedActivities)
+            // console.log(sortedActivities)
 
 
             Object.entries(sortedActivities).forEach(([key, value]) => {
