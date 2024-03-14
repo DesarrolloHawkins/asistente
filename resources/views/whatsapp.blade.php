@@ -214,7 +214,8 @@
         }
 
         .sidebar {
-        overflow-y: auto; /* Habilita desplazamiento vertical si es necesario */
+        overflow-y: scroll; /* Habilita desplazamiento vertical si es necesario */
+        height: 82%;
         }
 
         .col-md-4.border-right {
@@ -223,6 +224,8 @@
 
         .chat-panel {
         flex-grow: 1; /* Permite que este div ocupe el espacio restante */
+        overflow-y: scroll;
+        height: 88%;
         }
 
     </style>
@@ -230,7 +233,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="row no-gutters">
+        <div class="row no-gutters" style="height: inherit;">
             <div class="col-md-4 border-right">
                 <div class="settings-tray">
                 <img class="profile-image" src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/filip.jpg" alt="Profile img">
@@ -280,7 +283,7 @@
                 @endforeach
                 </div>
             </div>
-          <div id="chat-mensajes" class="col-md-8" style="display:none">
+          <div id="chat-mensajes" class="col-md-8" style="display:none;height: inherit;">
 
           </div>
 
