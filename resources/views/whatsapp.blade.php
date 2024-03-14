@@ -126,7 +126,7 @@
 
         .chat-bubble {
           padding: 10px 14px;
-          background: #eee;
+          background: #fff;
           margin: 10px 30px;
           border-radius: 9px;
           position: relative;
@@ -134,7 +134,7 @@
         }
         .chat-bubble2 {
           padding: 10px 14px;
-          background: #bfe5ff;
+          background: #d9fdd3;
           margin: 10px 30px;
           border-radius: 9px;
           position: relative;
@@ -162,19 +162,19 @@
         }
         .chat-bubble--left:after {
           left: 0;
-          border-right-color: #eee;
+          border-right-color: #fff;
           border-left: 0;
           margin-left: -20px;
         }
         .chat-bubble--right:after {
           right: 0;
-          border-left-color: #74b9ff;
+          border-left-color: #fff;
           border-right: 0;
           margin-right: -20px;
         }
         .chat-bubble2--right:after {
           right: 0;
-          border-left-color: #bfe5ff;
+          border-left-color: #d9fdd3;
           border-right: 0;
           margin-right: -20px;
         }
@@ -397,9 +397,11 @@
                         <div class="col-md-6">
                             <div class="chat-bubble chat-bubble--left">
                                 ${value.mensaje}
-                                <p class="fecha_mensaje"><small>
-                                ${value.created_at}
-                                </small></p>
+                                <p class="fecha_mensaje">
+                                    <small>
+                                    ${formatDate(value.created_at)}
+                                </small>
+                                </p>
                             </div>
                         </div>
                     </div>`
@@ -410,15 +412,16 @@
                 <div class="row no-gutters" style="justify-content: end;">
                     <div class="col-md-6">
                         <div class="chat-bubble2 chat-bubble2--right" >
-                            ${unicodeToChar(value.respuesta)}
-                            <p class="fecha_mensaje"><small>
-                            ${value.created_at}
-                            </small></p>
+                                ${unicodeToChar(value.respuesta)}
+                            <p class="fecha_mensaje">
+                                <small>
+                                ${formatDate(value.created_at)}
+                                </small>
+                            </p>
                         </div>
                     </div>
                 </div>`
               }
-
 
                 dataMensaje.push(templateChat)
                 $('#contenedorChat').append(templateChat)
@@ -439,6 +442,20 @@
             var scrollHeight = chatPanel.prop('scrollHeight'); // Obtiene la altura total del contenedor, incluyendo el contenido no visible.
             chatPanel.scrollTop(scrollHeight); // Establece la posición del scroll al final.
         });
+        function formatDate(dateString) {
+            const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+            const date = new Date(dateString);
+            const dayOfWeek = days[date.getDay()];
+            const formattedDate = dayOfWeek + ': ' +
+                                ('0' + date.getDate()).slice(-2) + '-' +
+                                ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
+                                date.getFullYear() + ' - ' +
+                                ('0' + date.getHours()).slice(-2) + ':' +
+                                ('0' + date.getMinutes()).slice(-2) + ':' +
+                                ('0' + date.getSeconds()).slice(-2);
+            return formattedDate;
+        }
+
 
 
     </script>
