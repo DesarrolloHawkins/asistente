@@ -409,7 +409,7 @@
                     </div>`
                 }
 
-
+            }
               if (value.respuesta != null) {
                 var templateChatRespuesta = `
                 <div class="row no-gutters" style="justify-content: end;">
