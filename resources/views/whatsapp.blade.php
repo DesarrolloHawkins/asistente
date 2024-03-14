@@ -398,7 +398,10 @@
             // console.log(data['34622440984'])
 
             // $( '.chat-bubble' ).hide('slow').show('slow');
-
+            // Una vez que se han agregado los mensajes al contenedor del chat, haz scroll hasta el final.
+            var chatPanel = $('#contenedorChat'); // Selecciona el contenedor del chat.
+            var scrollHeight = chatPanel.prop('scrollHeight'); // Obtiene la altura total del contenedor, incluyendo el contenido no visible.
+            chatPanel.scrollTop(scrollHeight); // Establece la posición del scroll al final.
         });
 
 
