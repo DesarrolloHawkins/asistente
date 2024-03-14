@@ -300,19 +300,22 @@
         // Video tutorial/codealong here: https://youtu.be/fCpw5i_2IYU
         var data = @json($resultado);
         var datas = JSON.stringify(data)
-        console.log(data['34622440984'])
+        console.log(data)
 
         $( '.friend-drawer--onhover' ).on( 'click',  function() {
-        console.log('Data id:',$(this).attr('data-id'))
-        console.log('Data: ',data[$(this).attr('data-id')])
-
+            var remitenteId = $(this).attr('data-id'); // Obtén el ID del remitente del atributo data-id.
+            var nombreRemitente;
+            data.map(function(item){
+                item.remitente == remitenteId ? nombreRemitente = item.nombre_remitente : ''
+            })
 
             var template = `
             <div class="settings-tray">
                 <div class="friend-drawer no-gutters friend-drawer--grey">
                     <img class="profile-image" src="https://media.istockphoto.com/id/1337144146/es/vector/vector-de-icono-de-perfil-de-avatar-predeterminado.jpg?s=612x612&w=0&k=20&c=YiNB64vwYQnKqp-bWd5mB_9QARD3tSpIosg-3kuQ_CI=" alt="">
                     <div class="text">
-                        <h6>${$(this).attr('data-id')}</h6>
+                        <h6>${nombreRemitente}</h6>
+                        <small>${remitenteId}</small>
                         <p style="display:none"class="text-muted">Layin' down the law since like before Christ...</p>
                 </div>
                 <span class="settings-tray--right">
