@@ -303,7 +303,7 @@
         console.log(data['34622440984'])
 
         $( '.friend-drawer--onhover' ).on( 'click',  function() {
-        console.log($('Data id:',this).attr('data-id'))
+        console.log('Data id:',$(this).attr('data-id'))
         console.log('Data: ',data[$(this).attr('data-id')])
 
 
