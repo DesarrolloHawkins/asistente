@@ -278,8 +278,9 @@
                         <div class="friend-drawer friend-drawer--onhover" data-id="{{$key}}">
                             <img class="profile-image" src="https://media.istockphoto.com/id/1337144146/es/vector/vector-de-icono-de-perfil-de-avatar-predeterminado.jpg?s=612x612&w=0&k=20&c=YiNB64vwYQnKqp-bWd5mB_9QARD3tSpIosg-3kuQ_CI=" alt="">
                             <div class="text">
-                            <h6>{{$key}}</h6>
-                            <p class="text-muted">{{$item[0]->mensaje}}</p>
+                                <h6>{{$item[0]->nombre_remitente}}</h6>
+                                <small>{{$key}}</small>
+                                <p class="text-muted">{{ \Illuminate\Support\Str::limit($item[0]->mensaje, 20, '...') }}</p>
                             </div>
                             <span class="time text-muted small">{{$item[0]->created_at}}</span>
                         </div>

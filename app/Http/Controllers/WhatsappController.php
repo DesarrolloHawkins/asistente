@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
 use App\Models\Mensaje;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -748,6 +749,20 @@ class WhatsappController extends Controller
         $mensajes = Mensaje::orderBy('created_at', 'desc')->get();
         $resultado = [];
         foreach ($mensajes as $elemento) {
+
+            $remitenteSinPrefijo = (substr($elemento['remitente'], 0, 2) == "34") ? substr($elemento['remitente'], 2) : $elemento['remitente'];
+
+            // Busca el cliente cuyo teléfono coincide con el remitente del mensaje.
+            $cliente = Client::where('phone', $remitenteSinPrefijo)->first();
+
+            // Si se encontró un cliente, añade su nombre al elemento del mensaje.
+            if ($cliente) {
+                $elemento['nombre_remitente'] = $cliente->name;
+            } else {
+                // Si no se encuentra el cliente, puedes optar por dejar el campo vacío o asignar un valor predeterminado.
+                $elemento['nombre_remitente'] = 'Desconocido';
+            }
+
             $resultado[$elemento['remitente']][] = $elemento;
 
 
