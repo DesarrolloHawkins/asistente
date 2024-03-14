@@ -32,20 +32,43 @@ class Kernel extends ConsoleKernel
 
             foreach($clientes as $client){
                 $envioMensaje = $this->autoMensajeWhatsappTemplate('34'.$client->phone, $client->name, 'clientes_vip');
-                $id = $envioMensaje['entry'][0]['changes'][0]['value']['messages'][0]['id'];
+                $id = $envioMensaje['messages'][0]['id'];
+                // "{
+                //     \"messaging_product\":\"whatsapp\",
+                //     \"contacts\":[
+                //         {
+                //             \"input\":\"3434605621704\",
+                //             \"wa_id\":\"3434605621704\"
+                //         }
+                //     ],
+                //     \"messages\":[
+                //         {
+                //             \"id\":\"wamid.HBgNMzQzNDYwNTYyMTcwNBUCABEYEkMwM0ZCRkQxNDYyMDYwMzQ4QwA=\",
+                //             \"message_status\":\"accepted\"
+                //         }
+                //     ]
+                // }";
+
+                $mensaje = 'Hola '.$client->name.' ! Soy Hera, de la agencia de publicidad *Hawkins*. Encantada!
+                Te escribo porque hemos implantado un programa de recomendación para un grupo pequeño de clientes VIP, entre los que tú estás.
+                Es sencillo, desde hoy, si nos recomiendas a algún cliente, el 8% de la facturación es para ti. Lo puedes recibir en metálico o en un cheque de servicios.
+                Por ejemplo: si nos recomiendas a un amigo y le tramitamos un kit digital de 6000€, te premiamos a ti con 480€.
+                *¿Qué te parece?*';
 
                 $dataRegistrar = [
                     'id_mensaje' => $id,
                     'id_three' => null,
                     'remitente' => '34'.$client->phone,
                     'mensaje' => null,
-                    'respuesta' => null,
+                    'respuesta' => $mensaje,
                     'status' => 1,
-                    'status_mensaje' => 0,
+                    'status_mensaje' => 1,
                     'type' => 'text',
                     'date' => Carbon::now()
                 ];
                 $mensajeCreado = Mensaje::create($dataRegistrar);
+                $client->send = true;
+                $client->save();
             }
             Log::info("Tarea programada de Envio Mesanje ClienteVip auto al cliente ejecutada con éxito.");
         })->everyMinute();
