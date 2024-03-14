@@ -199,17 +199,21 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         text-rendering: optimizeLegibility;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center
         }
 
         .container {
-        height: 100vh; /* Ajusta el contenedor al 100% de la altura de la ventana */
-        max-width: 100vw; /* Asegura que el ancho no se desborde */
+        height: 90vh; /* Ajusta el contenedor al 100% de la altura de la ventana */
+        max-width: 85vw; /* Asegura que el ancho no se desborde */
         overflow: hidden; /* Evita cualquier desbordamiento del contenedor */
         display: flex; /* Habilita la disposición flexible de los elementos internos */
         flex-direction: column; /* Organiza los elementos internos verticalmente */
         }
 
-        .col-md-4.border-right, .chat-panel {
+        .sidebar {
         overflow-y: auto; /* Habilita desplazamiento vertical si es necesario */
         }
 
@@ -227,60 +231,61 @@
 <body>
     <div class="container">
         <div class="row no-gutters">
-          <div class="col-md-4 border-right">
-            <div class="settings-tray">
-              <img class="profile-image" src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/filip.jpg" alt="Profile img">
-              <span class="settings-tray--right">
-                <i class="material-icons">cached</i>
-                <i class="material-icons">message</i>
-                <i class="material-icons">menu</i>
-              </span>
-            </div>
-            <div class="search-box">
-              <div class="input-wrapper">
-                <i class="material-icons">search</i>
-                <input placeholder="Search here" type="text">
-              </div>
-            </div>
-            @php
-            $items = $resultado;
-            function cmp($a, $b)
-            {
-                if ($a == $b) {
-                    return 0;
-                }
-                return ($a['created_at'] < $b['created_at']) ? 1 : -1;
-            }
-            // dd($resultado);
-
-            foreach ($items as $key => $result) {
-              // $items = usort($result, "cmp");
-              $result = usort($result, "cmp");
-
-            }
-
-            // dd($items);
-
-            @endphp
-            @foreach ($items as $key => $item)
-            {{-- {{dd($items)}} --}}
-                <div class="friend-drawer friend-drawer--onhover" data-id="{{$key}}">
-                    <img class="profile-image" src="https://repeller.com/wp-content/uploads/2017/10/Man-Repeller-October-2017-Emoji-1F9D9-2-M_320px-200x200.png" alt="">
-                    <div class="text">
-                      <h6>{{$key}}</h6>
-                      <p class="text-muted">{{$item[0]->mensaje}}</p>
-                    </div>
-                    <span class="time text-muted small">{{$item[0]->created_at}}</span>
+            <div class="col-md-4 border-right">
+                <div class="settings-tray">
+                <img class="profile-image" src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/filip.jpg" alt="Profile img">
+                <span class="settings-tray--right">
+                    <i class="material-icons">cached</i>
+                    <i class="material-icons">message</i>
+                    <i class="material-icons">menu</i>
+                </span>
                 </div>
-          @endforeach
+                <div class="search-box">
+                <div class="input-wrapper">
+                    <i class="material-icons">search</i>
+                    <input placeholder="Search here" type="text">
+                </div>
+                </div>
+                <div class="sidebar">
+                    @php
+                    $items = $resultado;
+                    function cmp($a, $b)
+                    {
+                        if ($a == $b) {
+                            return 0;
+                        }
+                        return ($a['created_at'] < $b['created_at']) ? 1 : -1;
+                    }
+                    // dd($resultado);
 
+                    foreach ($items as $key => $result) {
+                    // $items = usort($result, "cmp");
+                    $result = usort($result, "cmp");
+
+                    }
+
+                    // dd($items);
+
+                    @endphp
+                    @foreach ($items as $key => $item)
+                    {{-- {{dd($items)}} --}}
+                        <div class="friend-drawer friend-drawer--onhover" data-id="{{$key}}">
+                            <img class="profile-image" src="https://repeller.com/wp-content/uploads/2017/10/Man-Repeller-October-2017-Emoji-1F9D9-2-M_320px-200x200.png" alt="">
+                            <div class="text">
+                            <h6>{{$key}}</h6>
+                            <p class="text-muted">{{$item[0]->mensaje}}</p>
+                            </div>
+                            <span class="time text-muted small">{{$item[0]->created_at}}</span>
+                        </div>
+                @endforeach
+                </div>
             </div>
           <div id="chat-mensajes" class="col-md-8" style="display:none">
 
           </div>
 
         </div>
-      </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
