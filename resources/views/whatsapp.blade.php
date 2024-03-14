@@ -301,13 +301,16 @@
         var data = @json($resultado);
         var datas = JSON.stringify(data)
         console.log(data['34622440984'])
+
         $( '.friend-drawer--onhover' ).on( 'click',  function() {
+        console.log($('Data id:',this).attr('data-id'))
+        console.log('Data: ',data[$(this).attr('data-id')])
 
 
             var template = `
             <div class="settings-tray">
                 <div class="friend-drawer no-gutters friend-drawer--grey">
-                    <img class="profile-image" src="https://repeller.com/wp-content/uploads/2017/10/Man-Repeller-October-2017-Emoji-1F9D9-2-M_320px-200x200.png" alt="">
+                    <img class="profile-image" src="https://media.istockphoto.com/id/1337144146/es/vector/vector-de-icono-de-perfil-de-avatar-predeterminado.jpg?s=612x612&w=0&k=20&c=YiNB64vwYQnKqp-bWd5mB_9QARD3tSpIosg-3kuQ_CI=" alt="">
                     <div class="text">
                         <h6>${$(this).attr('data-id')}</h6>
                         <p style="display:none"class="text-muted">Layin' down the law since like before Christ...</p>
