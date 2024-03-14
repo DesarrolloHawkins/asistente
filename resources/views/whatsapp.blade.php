@@ -258,6 +258,8 @@
         var datas = JSON.stringify(data)
         console.log(data['34622440984'])
         $( '.friend-drawer--onhover' ).on( 'click',  function() {
+
+
             var template = `
             <div class="settings-tray">
                 <div class="friend-drawer no-gutters friend-drawer--grey">
@@ -273,14 +275,16 @@
                 </span>
               </div>
             </div>
-            <div class="chat-panel">`
-                var recorrer = data[$(this).attr('data-id')]
-                function unicodeToChar(text) {
-                    return text.replace(/\\u[\dA-F]{4}/gi,
-                            function (match) {
-                                return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16));
-                            });
-                }
+            <div class="chat-panel" id="contenedorChat">`
+
+
+            var recorrer = data[$(this).attr('data-id')]
+            function unicodeToChar(text) {
+                return text.replace(/\\u[\dA-F]{4}/gi,
+                        function (match) {
+                            return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16));
+                        });
+            }
 
             var dataMensaje = [];
 
@@ -304,27 +308,25 @@
               console.log(value)
               if(value.type == 'image'){
                 var templateChat = `
-                        <div class="row no-gutters">
-                            <div class="col-md-6">
-                                <div class="chat-bubble chat-bubble--left">
-                                    <img src="https://thwork.crmhawkins.com/image/${value.mensaje}.jpg" style="width: -webkit-fill-available;">
-                                </div>
-
+                    <div class="row no-gutters">
+                        <div class="col-md-6">
+                            <div class="chat-bubble chat-bubble--left">
+                                <img src="https://thwork.crmhawkins.com/image/${value.mensaje}.jpg" style="width: -webkit-fill-available;">
                             </div>
-                        </div>`
+                        </div>
+                    </div>`
               }else {
                 var templateChat = `
-                        <div class="row no-gutters">
-                            <div class="col-md-6">
-                                <div class="chat-bubble chat-bubble--left">
-                                    ${value.mensaje}
-                                    <p class="fecha_mensaje"><small>
-                                    ${value.created_at}
-                                    </small></p>
-                                </div>
-
+                    <div class="row no-gutters">
+                        <div class="col-md-6">
+                            <div class="chat-bubble chat-bubble--left">
+                                ${value.mensaje}
+                                <p class="fecha_mensaje"><small>
+                                ${value.created_at}
+                                </small></p>
                             </div>
-                        </div>`
+                        </div>
+                    </div>`
               }
 
               if (value.respuesta != null) {
@@ -337,20 +339,19 @@
                             ${value.created_at}
                             </small></p>
                         </div>
-
                     </div>
                 </div>`
               }
 
 
                 dataMensaje.push(templateChat)
-                $('#chat-mensajes').append(templateChat)
-                $('#chat-mensajes').append(templateChatRespuesta)
+                $('#contenedorChat').append(templateChat)
+                $('#contenedorChat').append(templateChatRespuesta)
             })
 
-            var templateFinal = '</div></div></div>'
+            var templateFinal = '</div></div>'
 
-            $('#chat-mensajes').append(templateFinal)
+            $('#contenedorChat').append(templateFinal)
 
             // console.log(dataMensaje)
             // console.log($(this).attr('data-id'))
