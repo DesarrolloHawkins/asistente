@@ -250,7 +250,8 @@
         flex-grow: 1; /* Permite que este div ocupe el espacio restante */
         overflow-y: scroll;
         height: 85%;
-        padding-bottom: 4rem;
+        padding-bottom: 2rem;
+        background-image: url(https://i.pinimg.com/originals/85/70/f6/8570f63….jpg);
         }
 
         .no-gutters {
