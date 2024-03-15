@@ -369,7 +369,19 @@
         // console.log(data)
         // console.log(datas)
 
+
+        // Función para volver al sidebar
+        $('.volver').on('click', function() {
+            console.log('volver')
+            $('.col-md-4.border-right').css('transform', 'translateX(0)');
+            $('.col-md-8').css('transform', 'translateX(100%)');
+        });
+
         $( '.friend-drawer--onhover' ).on( 'click',  function() {
+            if ($(window).width() <= 768) {
+                    $('.col-md-4.border-right').css('transform', 'translateX(-100%)');
+                    $('.col-md-8').css('transform', 'translateX(0)');
+            }
             var remitenteId = $(this).attr('data-id'); // Obtén el ID del remitente del atributo data-id.
             var nombreRemitente = data[remitenteId][0]['nombre_remitente'];
             // data.forEach(function(item){
@@ -502,20 +514,7 @@
         }
 
         $(document).ready(function() {
-            $('.friend-drawer--onhover').on('click', function() {
-                if ($(window).width() <= 768) {
-                    $('.col-md-4.border-right').css('transform', 'translateX(-100%)');
-                    $('.col-md-8').css('transform', 'translateX(0)');
-                }
-                // El resto del código para cargar los mensajes va aquí...
-            });
 
-            // Función para volver al sidebar
-            $('.volver').on('click', function() {
-                console.log('volver')
-                $('.col-md-4.border-right').css('transform', 'translateX(0)');
-                $('.col-md-8').css('transform', 'translateX(100%)');
-            });
         });
 
 
