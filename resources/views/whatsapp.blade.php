@@ -387,16 +387,15 @@
                         <h6>${nombreRemitente}</h6>
                         <small>${remitenteId}</small>
                         <p style="display:none"class="text-muted">Layin' down the law since like before Christ...</p>
+                    </div>
                 </div>
+            </div>
+            <div class="chat-panel" id="contenedorChat">`
                 // <span class="settings-tray--right">
                 //   <i class="material-icons">cached</i>
                 //   <i class="material-icons">message</i>
                 //   <i class="material-icons">menu</i>
                 // </span>
-              </div>
-            </div>
-            <div class="chat-panel" id="contenedorChat">`
-
 
             var recorrer = data[$(this).attr('data-id')]
             function unicodeToChar(text) {
