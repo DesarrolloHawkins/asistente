@@ -273,13 +273,13 @@
                 z-index: 1;
                 transform: translateX(100%); /* Oculta el panel de chat fuera de la pantalla */
             }
-            .back-to-sidebar {
-                display: block; /* Muestra el botón para volver */
+            /* .back-to-sidebar {
+                display: block;
                 position: absolute;
                 top: 10px;
                 left: 10px;
-                z-index: 5; /* Asegura que el botón esté visible sobre todo lo demás */
-            }
+                z-index: 5; Asegura que el botón esté visible sobre todo lo demás
+            } */
             .container {
                 height: 100vh; /* Ajusta el contenedor al 100% de la altura de la ventana */
                 max-width: 100vw; /* Asegura que el ancho no se desborde */
