@@ -377,6 +377,12 @@
             $('.col-md-8').css('transform', 'translateX(100%)');
         });
 
+        function volver(){
+            console.log('volver')
+            $('.col-md-4.border-right').css('transform', 'translateX(0)');
+            $('.col-md-8').css('transform', 'translateX(100%)');
+        }
+
         $( '.friend-drawer--onhover' ).on( 'click',  function() {
             if ($(window).width() <= 768) {
                     $('.col-md-4.border-right').css('transform', 'translateX(-100%)');
@@ -391,9 +397,9 @@
             var template = `
             <div class="settings-tray">
                 <div class="friend-drawer no-gutters friend-drawer--grey">
-                    <div class="back-to-sidebar">
+                    <botton onclick="volver()" class="back-to-sidebar">
                         <i class="material-icons volver">arrow_back</i>
-                    </div>
+                    </botton>
                     <img class="profile-image" src="https://media.istockphoto.com/id/1337144146/es/vector/vector-de-icono-de-perfil-de-avatar-predeterminado.jpg?s=612x612&w=0&k=20&c=YiNB64vwYQnKqp-bWd5mB_9QARD3tSpIosg-3kuQ_CI=" alt="">
                     <div class="text">
                         <h6>${nombreRemitente}</h6>
