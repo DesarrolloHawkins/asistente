@@ -381,8 +381,8 @@
                 <div class="friend-drawer no-gutters friend-drawer--grey">
                     <div class="back-to-sidebar">
                         <i class="material-icons">arrow_back</i>
-                        <img class="profile-image" src="https://media.istockphoto.com/id/1337144146/es/vector/vector-de-icono-de-perfil-de-avatar-predeterminado.jpg?s=612x612&w=0&k=20&c=YiNB64vwYQnKqp-bWd5mB_9QARD3tSpIosg-3kuQ_CI=" alt="">
                     </div>
+                    <img class="profile-image" src="https://media.istockphoto.com/id/1337144146/es/vector/vector-de-icono-de-perfil-de-avatar-predeterminado.jpg?s=612x612&w=0&k=20&c=YiNB64vwYQnKqp-bWd5mB_9QARD3tSpIosg-3kuQ_CI=" alt="">
                     <div class="text">
                         <h6>${nombreRemitente}</h6>
                         <small>${remitenteId}</small>
@@ -512,6 +512,7 @@
 
             // Función para volver al sidebar
             $('.back-to-sidebar').on('click', function() {
+                console.log('volver')
                 $('.col-md-4.border-right').css('transform', 'translateX(0)');
                 $('.col-md-8').css('transform', 'translateX(100%)');
             });
