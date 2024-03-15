@@ -280,6 +280,21 @@
                 left: 10px;
                 z-index: 5; /* Asegura que el botón esté visible sobre todo lo demás */
             }
+            .container {
+                height: 100vh; /* Ajusta el contenedor al 100% de la altura de la ventana */
+                max-width: 100vw; /* Asegura que el ancho no se desborde */
+                overflow: hidden; /* Evita cualquier desbordamiento del contenedor */
+                display: flex; /* Habilita la disposición flexible de los elementos internos */
+                flex-direction: column; /* Organiza los elementos internos verticalmente */
+                margin: 0 auto !important;
+            }
+            .back-to-sidebar {
+
+            }
+            .material-icons {
+                font-size: 3rem !important;
+
+            }
         }
 
     </style>
@@ -366,18 +381,18 @@
                 <div class="friend-drawer no-gutters friend-drawer--grey">
                     <div class="back-to-sidebar">
                         <i class="material-icons">arrow_back</i>
+                        <img class="profile-image" src="https://media.istockphoto.com/id/1337144146/es/vector/vector-de-icono-de-perfil-de-avatar-predeterminado.jpg?s=612x612&w=0&k=20&c=YiNB64vwYQnKqp-bWd5mB_9QARD3tSpIosg-3kuQ_CI=" alt="">
                     </div>
-                    <img class="profile-image" src="https://media.istockphoto.com/id/1337144146/es/vector/vector-de-icono-de-perfil-de-avatar-predeterminado.jpg?s=612x612&w=0&k=20&c=YiNB64vwYQnKqp-bWd5mB_9QARD3tSpIosg-3kuQ_CI=" alt="">
                     <div class="text">
                         <h6>${nombreRemitente}</h6>
                         <small>${remitenteId}</small>
                         <p style="display:none"class="text-muted">Layin' down the law since like before Christ...</p>
                 </div>
-                <span class="settings-tray--right">
-                  <i class="material-icons">cached</i>
-                  <i class="material-icons">message</i>
-                  <i class="material-icons">menu</i>
-                </span>
+                // <span class="settings-tray--right">
+                //   <i class="material-icons">cached</i>
+                //   <i class="material-icons">message</i>
+                //   <i class="material-icons">menu</i>
+                // </span>
               </div>
             </div>
             <div class="chat-panel" id="contenedorChat">`
