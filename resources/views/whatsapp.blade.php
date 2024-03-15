@@ -257,6 +257,31 @@
         .no-gutters {
             overflow: hidden;
         }
+
+        @media (max-width: 768px) {
+            .col-md-4.border-right, .col-md-8 {
+                height: 100vh; /* Altura completa */
+                width: 100vw; /* Ancho completo */
+                position: fixed; /* Posición fija */
+                top: 0;
+                transition: transform 0.3s ease-in-out; /* Transición suave */
+            }
+            .col-md-4.border-right {
+                z-index: 2; /* Asegura que el sidebar esté sobre el panel de chat */
+            }
+            .col-md-8 {
+                z-index: 1;
+                transform: translateX(100%); /* Oculta el panel de chat fuera de la pantalla */
+            }
+            .back-to-sidebar {
+                display: block; /* Muestra el botón para volver */
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                z-index: 5; /* Asegura que el botón esté visible sobre todo lo demás */
+            }
+        }
+
     </style>
 
 </head>
@@ -339,6 +364,9 @@
             var template = `
             <div class="settings-tray">
                 <div class="friend-drawer no-gutters friend-drawer--grey">
+                    <div class="back-to-sidebar">
+                        <i class="material-icons">arrow_back</i>
+                    </div>
                     <img class="profile-image" src="https://media.istockphoto.com/id/1337144146/es/vector/vector-de-icono-de-perfil-de-avatar-predeterminado.jpg?s=612x612&w=0&k=20&c=YiNB64vwYQnKqp-bWd5mB_9QARD3tSpIosg-3kuQ_CI=" alt="">
                     <div class="text">
                         <h6>${nombreRemitente}</h6>
@@ -382,49 +410,49 @@
 
 
             Object.entries(sortedActivities).forEach(([key, value]) => {
-              console.log(value)
-              if(value.type == 'image'){
-                var templateChat = `
-                    <div class="row no-gutters">
-                        <div class="col-md-6">
-                            <div class="chat-bubble chat-bubble--left">
-                                <img src="https://thwork.crmhawkins.com/image/${value.mensaje}.jpg" style="width: -webkit-fill-available;">
-                            </div>
-                        </div>
-                    </div>`
-              }else {
-                if (value.mensaje != null) {
+                console.log(value)
+                if(value.type == 'image'){
                     var templateChat = `
-                    <div class="row no-gutters">
+                        <div class="row no-gutters">
+                            <div class="col-md-6">
+                                <div class="chat-bubble chat-bubble--left">
+                                    <img src="https://thwork.crmhawkins.com/image/${value.mensaje}.jpg" style="width: -webkit-fill-available;">
+                                </div>
+                            </div>
+                        </div>`
+                }else {
+                    if (value.mensaje != null) {
+                        var templateChat = `
+                        <div class="row no-gutters">
+                            <div class="col-md-6">
+                                <div class="chat-bubble chat-bubble--left">
+                                    ${value.mensaje}
+                                    <p class="fecha_mensaje">
+                                        <small>
+                                        ${formatDate(value.created_at)}
+                                    </small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>`
+                    }
+
+                }
+                if (value.respuesta != null) {
+                    var templateChatRespuesta = `
+                    <div class="row no-gutters" style="justify-content: end;">
                         <div class="col-md-6">
-                            <div class="chat-bubble chat-bubble--left">
-                                ${value.mensaje}
+                            <div class="chat-bubble2 chat-bubble2--right" >
+                                    ${unicodeToChar(value.respuesta)}
                                 <p class="fecha_mensaje">
                                     <small>
                                     ${formatDate(value.created_at)}
-                                </small>
+                                    </small>
                                 </p>
                             </div>
                         </div>
                     </div>`
                 }
-
-            }
-              if (value.respuesta != null) {
-                var templateChatRespuesta = `
-                <div class="row no-gutters" style="justify-content: end;">
-                    <div class="col-md-6">
-                        <div class="chat-bubble2 chat-bubble2--right" >
-                                ${unicodeToChar(value.respuesta)}
-                            <p class="fecha_mensaje">
-                                <small>
-                                ${formatDate(value.created_at)}
-                                </small>
-                            </p>
-                        </div>
-                    </div>
-                </div>`
-              }
 
                 dataMensaje.push(templateChat)
                 $('#contenedorChat').append(templateChat)
@@ -459,6 +487,21 @@
             return formattedDate;
         }
 
+        $(document).ready(function() {
+            $('.friend-drawer--onhover').on('click', function() {
+                if ($(window).width() <= 768) {
+                    $('.col-md-4.border-right').css('transform', 'translateX(-100%)');
+                    $('.col-md-8').css('transform', 'translateX(0)');
+                }
+                // El resto del código para cargar los mensajes va aquí...
+            });
+
+            // Función para volver al sidebar
+            $('.back-to-sidebar').on('click', function() {
+                $('.col-md-4.border-right').css('transform', 'translateX(0)');
+                $('.col-md-8').css('transform', 'translateX(100%)');
+            });
+        });
 
 
     </script>
