@@ -606,20 +606,25 @@
 
         /* FUNCIONES */
         function initializeDynamicTextarea() {
+            // Selecciona dinámicamente el textarea en caso de que haya sido agregado recientemente
             var messageInput = $('#message-input');
 
-            // Asegura que el textarea ajuste su altura automáticamente
+            // Función para ajustar la altura automáticamente
             function adjustTextareaHeight() {
-                messageInput.each(function () {
-                    this.style.height = 'auto'; // Resetea la altura
-                    this.style.height = (this.scrollHeight) + 'px'; // Ajusta la altura
-                });
+                // Solo ajusta si el elemento existe
+                if (messageInput.length) {
+                    messageInput.css('height', 'auto'); // Resetea la altura
+                    messageInput.css('height', messageInput.prop('scrollHeight') + 'px'); // Ajusta la altura
+                }
             }
 
-            // Llama a adjustTextareaHeight inmediatamente para ajustar la altura inicial
+            // Asegúrate de ajustar la altura inicialmente en caso de que haya contenido
             adjustTextareaHeight();
 
-            // Si hay alguna manipulación adicional o eventos que escuchar, añádelos aquí
+            // Adjunta el evento input para ajustar dinámicamente
+            messageInput.off('input').on('input', function() {
+                adjustTextareaHeight();
+            });
         }
 
         function formatDate(dateString) {
