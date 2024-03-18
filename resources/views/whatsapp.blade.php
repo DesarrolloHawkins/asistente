@@ -521,6 +521,8 @@
                 <input type="text" id="message-input" placeholder="Escribe un mensaje aquí..." class="form-control">
                 <i class="material-icons send-icon" style="cursor: pointer;">send</i>
                 <input type="file" id="image-upload" style="display: none;" accept="image/*">
+                <img id="image-preview" src="#" alt="Vista previa de la imagen" style="display: none;">
+
             </div>`
 
             $('#contenedorChat').append(templateFinal)
@@ -575,6 +577,35 @@
         });
 
         $(document).ready(function() {
+            // Permitir arrastrar y soltar sobre el área de mensaje, no solo sobre el input
+            $('.chat-box-tray').on('dragover', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                // Opcional: Agregar algún estilo al input o contenedor para indicar que se puede soltar
+            }).on('drop', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                var files = event.originalEvent.dataTransfer.files;
+                if (files.length) {
+                    // Asigna el archivo al input de tipo 'file'
+                    $('#image-upload').prop('files', files);
+                    // Opcional: Mostrar una vista previa de la imagen
+                    readURL(files[0]);
+                }
+            });
+
+            // Mostrar vista previa de la imagen cargada
+            function readURL(file) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    // Aquí puedes implementar cómo mostrar la vista previa
+                    // Por ejemplo, asignando el resultado a un elemento <img>
+                    $('#image-preview').attr('src', e.target.result).show();
+                }
+
+                reader.readAsDataURL(file);
+            }
             // Escucha el evento de arrastrar y soltar para cargar imágenes
             $('#message-input').on('dragover', function(event) {
                 event.preventDefault();
@@ -597,6 +628,7 @@
                 // Aquí iría tu lógica para enviar el mensaje o la imagen
                 var messageText = $('#message-input').val();
                 var imageFile = $('#image-upload').prop('files')[0]; // Si es que hay una imagen seleccionada
+                console.log(messageText);
 
                 // Comprueba si se ha ingresado texto o seleccionado una imagen
                 if(messageText || imageFile) {
