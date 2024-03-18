@@ -641,6 +641,8 @@
 
             // Escucha el clic en el botón de envío
             $('.send-icon').click(function() {
+                console.log('click boton envio');
+
                 // Aquí iría tu lógica para enviar el mensaje o la imagen
                 var messageText = $('#message-input').val();
                 var imageFile = $('#image-upload').prop('files')[0]; // Si es que hay una imagen seleccionada
