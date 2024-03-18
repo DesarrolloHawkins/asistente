@@ -519,7 +519,7 @@
             </div>
             <div class="chat-box-tray">
                 <input type="text" id="message-input" placeholder="Escribe un mensaje aquí..." class="form-control">
-                <button  id="send-icon" class="border-none"><i class="material-icons send-icon" style="cursor: pointer;">send</i></button>
+                <button  id="send-icon" class="border-0 bg-transparent"><i class="material-icons send-icon" style="cursor: pointer;">send</i></button>
                 <input type="file" id="image-upload" style="display: none;" accept="image/*">
                 <img id="image-preview" src="#" alt="Vista previa de la imagen" style="display: none;">
             </div>`
@@ -578,10 +578,10 @@
         $(document).ready(function() {
 
             // Prevenir el comportamiento predeterminado para arrastrar y soltar en el documento
-            $(document).on('dragover drop', function(event) {
-                event.preventDefault();
-                event.stopPropagation();
-            });
+            // $(document).on('dragover drop', function(event) {
+            //     event.preventDefault();
+            //     event.stopPropagation();
+            // });
 
             // // Especificar el comportamiento solo dentro del área deseada
             // $('.chat-box-tray').on('drop', function(event) {
