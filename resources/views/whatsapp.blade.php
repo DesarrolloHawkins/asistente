@@ -519,7 +519,7 @@
             </div>
             <div class="chat-box-tray">
                 <input type="text" id="message-input" placeholder="Escribe un mensaje aquí..." class="form-control">
-                <i class="material-icons send-icon" style="cursor: pointer;">send</i>
+                <i id="send-icon" class="material-icons send-icon" style="cursor: pointer;">send</i>
                 <input type="file" id="image-upload" style="display: none;" accept="image/*">
                 <img id="image-preview" src="#" alt="Vista previa de la imagen" style="display: none;">
 
@@ -640,7 +640,7 @@
             });
 
             // Escucha el clic en el botón de envío
-            $('.send-icon').click(function() {
+            $('#send-icon').click(function() {
                 console.log('click boton envio');
 
                 // Aquí iría tu lógica para enviar el mensaje o la imagen
