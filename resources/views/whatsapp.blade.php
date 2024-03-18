@@ -522,7 +522,6 @@
                 <i id="send-icon" class="material-icons send-icon" style="cursor: pointer;">send</i>
                 <input type="file" id="image-upload" style="display: none;" accept="image/*">
                 <img id="image-preview" src="#" alt="Vista previa de la imagen" style="display: none;">
-
             </div>`
 
             $('#contenedorChat').append(templateFinal)
