@@ -518,7 +518,7 @@
             </div>
             </div>
             <div class="chat-box-tray">
-                <input type="text" id="message-input" placeholder="Escribe un mensaje aquí..." class="form-control">
+                <textarea id="message-input" placeholder="Escribe un mensaje aquí..." class="form-control" rows="1" style="overflow:hidden;"></textarea>
                 <button  id="send-icon" class="border-0 bg-transparent"><i class="material-icons send-icon" style="cursor: pointer;">send</i></button>
                 <input type="file" id="image-upload" style="display: none;" accept="image/*">
                 <img id="image-preview" src="#" alt="Vista previa de la imagen" style="display: none;">
@@ -535,7 +535,29 @@
             var chatPanel = $('#contenedorChat'); // Selecciona el contenedor del chat.
             var scrollHeight = chatPanel.prop('scrollHeight'); // Obtiene la altura total del contenedor, incluyendo el contenido no visible.
             chatPanel.scrollTop(scrollHeight); // Establece la posición del scroll al final.
+            initializeDynamicTextarea();
+
         });
+
+        var messageInput = $('#message-input');
+
+        function initializeDynamicTextarea() {
+            var messageInput = $('#message-input');
+
+            // Asegura que el textarea ajuste su altura automáticamente
+            function adjustTextareaHeight() {
+                messageInput.each(function () {
+                    this.style.height = 'auto'; // Resetea la altura
+                    this.style.height = (this.scrollHeight) + 'px'; // Ajusta la altura
+                });
+            }
+
+            // Llama a adjustTextareaHeight inmediatamente para ajustar la altura inicial
+            adjustTextareaHeight();
+
+            // Si hay alguna manipulación adicional o eventos que escuchar, añádelos aquí
+        }
+
         function formatDate(dateString) {
             const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
             const date = new Date(dateString);
