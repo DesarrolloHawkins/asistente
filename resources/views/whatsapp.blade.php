@@ -639,8 +639,8 @@
                 }
             });
 
-            // Escucha el clic en el botón de envío
-            $('#send-icon').on('click', function() {
+            // Delegar evento click para el botón de envío que se añade dinámicamente
+            $(document).on('click', '#send-icon', function() {
                 console.log('click boton envio');
 
                 // Aquí iría tu lógica para enviar el mensaje o la imagen
@@ -656,6 +656,8 @@
                     // Limpiar input y campo de archivo después de enviar
                     $('#message-input').val('');
                     $('#image-upload').val('');
+                    // Opcional: Resetear la vista previa de la imagen
+                    $('#image-preview').attr('src', '#').hide();
                 }
             });
         });
