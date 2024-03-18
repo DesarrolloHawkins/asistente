@@ -594,7 +594,7 @@
             //     }
             // });
             // Permitir arrastrar y soltar sobre el área de mensaje, no solo sobre el input
-            $('.chat-box-tray').on('dragover', function(event) {
+            $(document).on('dragover drop', '.chat-box-tray', function(event) {
                 event.preventDefault();
                 event.stopPropagation();
                 // Opcional: Agregar algún estilo al input o contenedor para indicar que se puede soltar
