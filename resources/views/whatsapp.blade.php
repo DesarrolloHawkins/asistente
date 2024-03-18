@@ -577,6 +577,22 @@
         });
 
         $(document).ready(function() {
+
+            // Prevenir el comportamiento predeterminado para arrastrar y soltar en el documento
+            $(document).on('dragover drop', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+            });
+
+            // Especificar el comportamiento solo dentro del área deseada
+            $('.chat-box-tray').on('drop', function(event) {
+                var files = event.originalEvent.dataTransfer.files;
+                if (files.length) {
+                    // Asigna el archivo al input de tipo 'file'
+                    $('#image-upload').prop('files', files);
+                    // Opcional: mostrar una vista previa o procesar el archivo aquí
+                }
+            });
             // Permitir arrastrar y soltar sobre el área de mensaje, no solo sobre el input
             $('.chat-box-tray').on('dragover', function(event) {
                 event.preventDefault();
