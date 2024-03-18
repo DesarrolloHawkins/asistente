@@ -200,6 +200,8 @@
           align-items: center;
           margin-top: 19px;
           bottom: 0;
+          position: absolute;
+            width: 100%;
         }
         .chat-box-tray input {
           margin: 0 10px;
@@ -249,8 +251,8 @@
         .chat-panel {
         flex-grow: 1; /* Permite que este div ocupe el espacio restante */
         overflow-y: scroll;
-        height: 85%;
-        padding-bottom: 2rem;
+        height: 91%;
+        padding-bottom: 5rem;
         background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
         }
 
@@ -374,7 +376,7 @@
                 @endforeach
                 </div>
             </div>
-          <div id="chat-mensajes" class="col-md-8" style="display:none;height: inherit;">
+          <div id="chat-mensajes" class="col-md-8" style="display:none;height: 100%;">
 
           </div>
 
@@ -514,7 +516,6 @@
 
             var templateFinal = `
             </div>
-
             </div>
             <div class="chat-box-tray">
                 <input type="text" id="message-input" placeholder="Escribe un mensaje aquí..." class="form-control">
