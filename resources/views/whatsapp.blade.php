@@ -586,6 +586,7 @@
             // Especificar el comportamiento solo dentro del área deseada
             $('.chat-box-tray').on('drop', function(event) {
                 var files = event.originalEvent.dataTransfer.files;
+                console.log('arrastrar')
                 if (files.length) {
                     // Asigna el archivo al input de tipo 'file'
                     $('#image-upload').prop('files', files);
