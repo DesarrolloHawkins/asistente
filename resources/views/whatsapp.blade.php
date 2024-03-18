@@ -583,16 +583,16 @@
                 event.stopPropagation();
             });
 
-            // Especificar el comportamiento solo dentro del área deseada
-            $('.chat-box-tray').on('drop', function(event) {
-                var files = event.originalEvent.dataTransfer.files;
-                console.log('arrastrar')
-                if (files.length) {
-                    // Asigna el archivo al input de tipo 'file'
-                    $('#image-upload').prop('files', files);
-                    // Opcional: mostrar una vista previa o procesar el archivo aquí
-                }
-            });
+            // // Especificar el comportamiento solo dentro del área deseada
+            // $('.chat-box-tray').on('drop', function(event) {
+            //     var files = event.originalEvent.dataTransfer.files;
+            //     console.log('arrastrar')
+            //     if (files.length) {
+            //         // Asigna el archivo al input de tipo 'file'
+            //         $('#image-upload').prop('files', files);
+            //         // Opcional: mostrar una vista previa o procesar el archivo aquí
+            //     }
+            // });
             // Permitir arrastrar y soltar sobre el área de mensaje, no solo sobre el input
             $('.chat-box-tray').on('dragover', function(event) {
                 event.preventDefault();
@@ -622,22 +622,22 @@
 
                 reader.readAsDataURL(file);
             }
-            // Escucha el evento de arrastrar y soltar para cargar imágenes
-            $('#message-input').on('dragover', function(event) {
-                event.preventDefault();
-                event.stopPropagation();
-                // Opcional: Añadir algún estilo al input cuando se arrastra una imagen sobre él
-            }).on('drop', function(event) {
-                event.preventDefault();
-                event.stopPropagation();
-                // Obtiene el archivo arrastrado
-                var files = event.originalEvent.dataTransfer.files;
-                if(files.length) {
-                    // Aquí puedes manejar la carga del archivo, como mostrar una vista previa o subirlo
-                    // Por ejemplo, asignar el archivo a un input file para luego ser enviado
-                    $('#image-upload').prop('files', files);
-                }
-            });
+            // // Escucha el evento de arrastrar y soltar para cargar imágenes
+            // $('#message-input').on('dragover', function(event) {
+            //     event.preventDefault();
+            //     event.stopPropagation();
+            //     // Opcional: Añadir algún estilo al input cuando se arrastra una imagen sobre él
+            // }).on('drop', function(event) {
+            //     event.preventDefault();
+            //     event.stopPropagation();
+            //     // Obtiene el archivo arrastrado
+            //     var files = event.originalEvent.dataTransfer.files;
+            //     if(files.length) {
+            //         // Aquí puedes manejar la carga del archivo, como mostrar una vista previa o subirlo
+            //         // Por ejemplo, asignar el archivo a un input file para luego ser enviado
+            //         $('#image-upload').prop('files', files);
+            //     }
+            // });
 
             // Delegar evento click para el botón de envío que se añade dinámicamente
             $(document).on('click', '#send-icon', function() {
