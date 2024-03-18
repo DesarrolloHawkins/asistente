@@ -594,31 +594,27 @@
             //     }
             // });
             // Permitir arrastrar y soltar sobre el área de mensaje, no solo sobre el input
-            $(document).on('dragover drop', '.chat-box-tray', function(event) {
+            // Este evento maneja específicamente el "drop" sobre el ".chat-box-tray".
+            $(document).on('drop', '.chat-box-tray', function(event) {
                 event.preventDefault();
-                event.stopPropagation();
-                // Opcional: Agregar algún estilo al input o contenedor para indicar que se puede soltar
-            }).on('drop', function(event) {
-                event.preventDefault();
-                event.stopPropagation();
                 var files = event.originalEvent.dataTransfer.files;
                 if (files.length) {
                     // Asigna el archivo al input de tipo 'file'
                     $('#image-upload').prop('files', files);
-                    // Opcional: Mostrar una vista previa de la imagen
+
+                    // Llama a readURL para mostrar la vista previa
                     readURL(files[0]);
                 }
             });
 
             // Mostrar vista previa de la imagen cargada
+            // Función para mostrar vista previa de la imagen
             function readURL(file) {
                 var reader = new FileReader();
 
                 reader.onload = function(e) {
-                    // Aquí puedes implementar cómo mostrar la vista previa
-                    // Por ejemplo, asignando el resultado a un elemento <img>
                     $('#image-preview').attr('src', e.target.result).show();
-                }
+                };
 
                 reader.readAsDataURL(file);
             }
