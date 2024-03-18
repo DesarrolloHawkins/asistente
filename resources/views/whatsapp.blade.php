@@ -642,6 +642,7 @@
                 // Aquí iría tu lógica para enviar el mensaje o la imagen
                 var messageText = $('#message-input').val();
                 var imageFile = $('#image-upload').prop('files')[0]; // Si es que hay una imagen seleccionada
+                console.log(imageFile);
                 console.log(messageText);
 
                 // Comprueba si se ha ingresado texto o seleccionado una imagen
@@ -654,6 +655,7 @@
                     $('#image-upload').val('');
                     // Opcional: Resetear la vista previa de la imagen
                     $('#image-preview').attr('src', '#').hide();
+
                 }
             });
         });
