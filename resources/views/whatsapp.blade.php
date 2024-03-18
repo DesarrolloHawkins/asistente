@@ -519,7 +519,7 @@
             </div>
             <div class="chat-box-tray">
                 <input type="text" id="message-input" placeholder="Escribe un mensaje aquí..." class="form-control">
-                <i id="send-icon" class="material-icons send-icon" style="cursor: pointer;">send</i>
+                <button  id="send-icon" class="border-none"><i class="material-icons send-icon" style="cursor: pointer;">send</i></button>
                 <input type="file" id="image-upload" style="display: none;" accept="image/*">
                 <img id="image-preview" src="#" alt="Vista previa de la imagen" style="display: none;">
             </div>`
