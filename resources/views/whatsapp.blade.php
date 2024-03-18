@@ -602,6 +602,7 @@
 
                 }
                 $('#message-input').css('height', 'auto');
+
                 initializeDynamicTextarea();
 
             });
