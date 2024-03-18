@@ -304,6 +304,16 @@
                 background-image: url(https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png);
             }
         }
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper .clear-icon {
+            position: absolute;
+            right: 10px;
+        }
 
     </style>
 
@@ -321,10 +331,13 @@
                 </span>
                 </div>
                 <div class="search-box">
-                <div class="input-wrapper">
-                    <i class="material-icons">search</i>
-                    <input placeholder="Search here" type="text">
-                </div>
+                    <div class="search-box">
+                        <div class="input-wrapper">
+                            <i class="material-icons">search</i>
+                            <input placeholder="Search here" type="text" id="search-input">
+                            <i class="material-icons clear-icon" style="display: none; cursor: pointer;">close</i>
+                        </div>
+                    </div>
                 </div>
                 <div class="sidebar">
                     @php
@@ -528,7 +541,28 @@
         }
 
         $(document).ready(function() {
+            // Manejar entrada en el campo de búsqueda
+            $('#search-input').on('input', function() {
+                var searchValue = $(this).val().toLowerCase();
+                // Muestra el ícono de "x" cuando hay texto
+                if (searchValue) {
+                    $('.clear-icon').show();
+                } else {
+                    $('.clear-icon').hide();
+                }
 
+                // Filtrar la lista de amigos
+                $(".friend-drawer").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
+                });
+            });
+
+            // Manejar clic en el ícono de "x"
+            $('.clear-icon').click(function() {
+                $('#search-input').val(''); // Borra el texto del input
+                $(this).hide(); // Oculta el ícono de "x"
+                $(".friend-drawer").show(); // Muestra todos los amigos nuevamente
+            });
         });
 
 
