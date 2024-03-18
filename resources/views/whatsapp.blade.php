@@ -601,6 +601,9 @@
                     $('#image-preview').attr('src', '#').hide();
 
                 }
+                $('#message-input').css('height', 'auto');
+                initializeDynamicTextarea();
+
             });
         });
 
