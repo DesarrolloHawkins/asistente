@@ -640,7 +640,7 @@
             });
 
             // Escucha el clic en el botón de envío
-            $('#send-icon').click(function() {
+            $('#send-icon').on('click', function() {
                 console.log('click boton envio');
 
                 // Aquí iría tu lógica para enviar el mensaje o la imagen
