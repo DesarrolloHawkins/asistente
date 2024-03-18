@@ -512,7 +512,13 @@
                 $('#contenedorChat').append(templateChatRespuesta)
             })
 
-            var templateFinal = '</div></div>'
+            var templateFinal = `
+            <div class="chat-box-tray">
+                <input type="text" id="message-input" placeholder="Escribe un mensaje aquí..." class="form-control">
+                <i class="material-icons send-icon" style="cursor: pointer;">send</i>
+                <input type="file" id="image-upload" style="display: none;" accept="image/*">
+            </div>
+            </div></div>`
 
             $('#contenedorChat').append(templateFinal)
 
@@ -565,6 +571,41 @@
             });
         });
 
+        $(document).ready(function() {
+        // Escucha el evento de arrastrar y soltar para cargar imágenes
+        $('#message-input').on('dragover', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            // Opcional: Añadir algún estilo al input cuando se arrastra una imagen sobre él
+        }).on('drop', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            // Obtiene el archivo arrastrado
+            var files = event.originalEvent.dataTransfer.files;
+            if(files.length) {
+                // Aquí puedes manejar la carga del archivo, como mostrar una vista previa o subirlo
+                // Por ejemplo, asignar el archivo a un input file para luego ser enviado
+                $('#image-upload').prop('files', files);
+            }
+        });
+
+        // Escucha el clic en el botón de envío
+        $('.send-icon').click(function() {
+            // Aquí iría tu lógica para enviar el mensaje o la imagen
+            var messageText = $('#message-input').val();
+            var imageFile = $('#image-upload').prop('files')[0]; // Si es que hay una imagen seleccionada
+
+            // Comprueba si se ha ingresado texto o seleccionado una imagen
+            if(messageText || imageFile) {
+                // Lógica para enviar mensaje o imagen
+                console.log("Enviar mensaje o imagen");
+
+                // Limpiar input y campo de archivo después de enviar
+                $('#message-input').val('');
+                $('#image-upload').val('');
+            }
+        });
+    });
 
     </script>
 </body>
