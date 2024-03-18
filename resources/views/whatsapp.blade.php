@@ -384,27 +384,17 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
     <script>
-        // Video tutorial/codealong here: https://youtu.be/fCpw5i_2IYU
         var data = @json($resultado);
         var datas = JSON.stringify(data)
-        // console.log(data)
-        // console.log(datas)
+        var messageInput = $('#message-input');
 
-
-        // Función para volver al sidebar
+        // EVENTOS
         $('.volver').on('click', function() {
             console.log('volver')
             $('.col-md-4.border-right').css('transform', 'translateX(0)');
             $('.col-md-8').css('transform', 'translateX(100%)');
         });
-
-        function volver(){
-            console.log('volver')
-            $('.col-md-4.border-right').css('transform', 'translateX(0)');
-            $('.col-md-8').css('transform', 'translateX(100%)');
-        }
 
         $( '.friend-drawer--onhover' ).on( 'click',  function() {
             if ($(window).width() <= 768) {
@@ -536,11 +526,85 @@
             var scrollHeight = chatPanel.prop('scrollHeight'); // Obtiene la altura total del contenedor, incluyendo el contenido no visible.
             chatPanel.scrollTop(scrollHeight); // Establece la posición del scroll al final.
             initializeDynamicTextarea();
-
         });
 
-        var messageInput = $('#message-input');
+        $(document).ready(function() {
+            // Manejar entrada en el campo de búsqueda
+            $('#search-input').on('input', function() {
+                var searchValue = $(this).val().toLowerCase();
+                // Muestra el ícono de "x" cuando hay texto
+                if (searchValue) {
+                    $('.clear-icon').show();
+                } else {
+                    $('.clear-icon').hide();
+                }
 
+                // Filtrar la lista de amigos
+                $(".friend-drawer").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
+                });
+            });
+
+            // Manejar clic en el ícono de "x"
+            $('.clear-icon').click(function() {
+                $('#search-input').val(''); // Borra el texto del input
+                $(this).hide(); // Oculta el ícono de "x"
+                $(".friend-drawer").show(); // Muestra todos los amigos nuevamente
+            });
+        });
+
+        $(document).ready(function() {
+
+            $(document).on('drop', '.chat-box-tray', function(event) {
+                event.preventDefault();
+                var files = event.originalEvent.dataTransfer.files;
+                if (files.length) {
+                    // Asigna el archivo al input de tipo 'file'
+                    $('#image-upload').prop('files', files);
+
+                    // Llama a readURL para mostrar la vista previa
+                    readURL(files[0]);
+                }
+            });
+
+            // Mostrar vista previa de la imagen cargada
+            // Función para mostrar vista previa de la imagen
+            function readURL(file) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    $('#image-preview').attr('src', e.target.result).show();
+                };
+
+                reader.readAsDataURL(file);
+            }
+
+            // Delegar evento click para el botón de envío que se añade dinámicamente
+            $(document).on('click', '#send-icon', function() {
+                console.log('click boton envio');
+
+                // Aquí iría tu lógica para enviar el mensaje o la imagen
+                var messageText = $('#message-input').val();
+                var imageFile = $('#image-upload').prop('files')[0]; // Si es que hay una imagen seleccionada
+                console.log(imageFile);
+                console.log(messageText);
+
+                // Comprueba si se ha ingresado texto o seleccionado una imagen
+                if(messageText || imageFile) {
+                    // Lógica para enviar mensaje o imagen
+                    console.log("Enviar mensaje o imagen");
+
+                    // Limpiar input y campo de archivo después de enviar
+                    $('#message-input').val('');
+                    $('#image-upload').val('');
+                    // Opcional: Resetear la vista previa de la imagen
+                    $('#image-preview').attr('src', '#').hide();
+
+                }
+            });
+        });
+
+        /* FUNCIONES */
         function initializeDynamicTextarea() {
             var messageInput = $('#message-input');
 
@@ -572,115 +636,11 @@
             return formattedDate;
         }
 
-        $(document).ready(function() {
-            // Manejar entrada en el campo de búsqueda
-            $('#search-input').on('input', function() {
-                var searchValue = $(this).val().toLowerCase();
-                // Muestra el ícono de "x" cuando hay texto
-                if (searchValue) {
-                    $('.clear-icon').show();
-                } else {
-                    $('.clear-icon').hide();
-                }
-
-                // Filtrar la lista de amigos
-                $(".friend-drawer").filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
-                });
-            });
-
-            // Manejar clic en el ícono de "x"
-            $('.clear-icon').click(function() {
-                $('#search-input').val(''); // Borra el texto del input
-                $(this).hide(); // Oculta el ícono de "x"
-                $(".friend-drawer").show(); // Muestra todos los amigos nuevamente
-            });
-        });
-
-        $(document).ready(function() {
-
-            // Prevenir el comportamiento predeterminado para arrastrar y soltar en el documento
-            // $(document).on('dragover drop', function(event) {
-            //     event.preventDefault();
-            //     event.stopPropagation();
-            // });
-
-            // // Especificar el comportamiento solo dentro del área deseada
-            // $('.chat-box-tray').on('drop', function(event) {
-            //     var files = event.originalEvent.dataTransfer.files;
-            //     console.log('arrastrar')
-            //     if (files.length) {
-            //         // Asigna el archivo al input de tipo 'file'
-            //         $('#image-upload').prop('files', files);
-            //         // Opcional: mostrar una vista previa o procesar el archivo aquí
-            //     }
-            // });
-            // Permitir arrastrar y soltar sobre el área de mensaje, no solo sobre el input
-            // Este evento maneja específicamente el "drop" sobre el ".chat-box-tray".
-            $(document).on('drop', '.chat-box-tray', function(event) {
-                event.preventDefault();
-                var files = event.originalEvent.dataTransfer.files;
-                if (files.length) {
-                    // Asigna el archivo al input de tipo 'file'
-                    $('#image-upload').prop('files', files);
-
-                    // Llama a readURL para mostrar la vista previa
-                    readURL(files[0]);
-                }
-            });
-
-            // Mostrar vista previa de la imagen cargada
-            // Función para mostrar vista previa de la imagen
-            function readURL(file) {
-                var reader = new FileReader();
-
-                reader.onload = function(e) {
-                    $('#image-preview').attr('src', e.target.result).show();
-                };
-
-                reader.readAsDataURL(file);
-            }
-            // // Escucha el evento de arrastrar y soltar para cargar imágenes
-            // $('#message-input').on('dragover', function(event) {
-            //     event.preventDefault();
-            //     event.stopPropagation();
-            //     // Opcional: Añadir algún estilo al input cuando se arrastra una imagen sobre él
-            // }).on('drop', function(event) {
-            //     event.preventDefault();
-            //     event.stopPropagation();
-            //     // Obtiene el archivo arrastrado
-            //     var files = event.originalEvent.dataTransfer.files;
-            //     if(files.length) {
-            //         // Aquí puedes manejar la carga del archivo, como mostrar una vista previa o subirlo
-            //         // Por ejemplo, asignar el archivo a un input file para luego ser enviado
-            //         $('#image-upload').prop('files', files);
-            //     }
-            // });
-
-            // Delegar evento click para el botón de envío que se añade dinámicamente
-            $(document).on('click', '#send-icon', function() {
-                console.log('click boton envio');
-
-                // Aquí iría tu lógica para enviar el mensaje o la imagen
-                var messageText = $('#message-input').val();
-                var imageFile = $('#image-upload').prop('files')[0]; // Si es que hay una imagen seleccionada
-                console.log(imageFile);
-                console.log(messageText);
-
-                // Comprueba si se ha ingresado texto o seleccionado una imagen
-                if(messageText || imageFile) {
-                    // Lógica para enviar mensaje o imagen
-                    console.log("Enviar mensaje o imagen");
-
-                    // Limpiar input y campo de archivo después de enviar
-                    $('#message-input').val('');
-                    $('#image-upload').val('');
-                    // Opcional: Resetear la vista previa de la imagen
-                    $('#image-preview').attr('src', '#').hide();
-
-                }
-            });
-        });
+        function volver(){
+            console.log('volver')
+            $('.col-md-4.border-right').css('transform', 'translateX(0)');
+            $('.col-md-8').css('transform', 'translateX(100%)');
+        }
 
     </script>
 </body>
