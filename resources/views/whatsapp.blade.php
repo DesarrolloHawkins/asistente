@@ -513,12 +513,13 @@
             })
 
             var templateFinal = `
+            </div>
             <div class="chat-box-tray">
                 <input type="text" id="message-input" placeholder="Escribe un mensaje aquí..." class="form-control">
                 <i class="material-icons send-icon" style="cursor: pointer;">send</i>
                 <input type="file" id="image-upload" style="display: none;" accept="image/*">
             </div>
-            </div></div>`
+            </div>`
 
             $('#contenedorChat').append(templateFinal)
 
