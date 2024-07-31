@@ -141,7 +141,7 @@ class AccionesController extends Controller
 
             $mensaje = 'Buenas tardes!
                         Me llamo Hera y te escribo de Hawkins, tu agente digitalizador para las subvenciones del kit digital.
-                        Te escribo principalmente para continuar con tu subvención. Quieres que te llamemos mañana y avancemos con tu proyecto? Quedo a la espera, Gracias!';
+                        Te escribo principalmente para continuar con tu subvención. Quieres que te llamemos y avancemos con tu proyecto? Si no te viene bien hoy dime cuando te vendria bien. Quedo a la espera, Gracias!';
 
             $dataRegistrar = [
                 'id_mensaje' => $id,
