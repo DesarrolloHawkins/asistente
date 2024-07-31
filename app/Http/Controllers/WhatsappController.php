@@ -327,6 +327,8 @@ class WhatsappController extends Controller
 
             $isAutomatico = Mensaje::where('remitente', $phone)
             ->where('is_automatic', true)
+            ->where('mensaje', null)
+            ->where('created_at', '>=', Carbon::now()->subDay())
             ->orderBy('created_at', 'desc')
             ->first();
 
