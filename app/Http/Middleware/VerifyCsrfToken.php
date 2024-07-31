@@ -14,5 +14,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         '/whatsapp',
         '/listar-mensajes/{id}', // Añadido explícitamente
+        '/listar-mensajes/*', // Añadido explícitamente
+        '/listar-mensajes', // Añadido explícitamente
     ];
 }
