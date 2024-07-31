@@ -104,10 +104,13 @@ class AccionesController extends Controller
         // $data = $response->json();
 
         $phones = [];
-        foreach ($data['ayudas'] as $item) {
-            if (isset($item['telefono']) && preg_match('/^\d{9}$/', $item['telefono'])) {
-                // dd($item);
-                $phones[] = $item['telefono'];
+        foreach ($data as $item) {
+            if (isset($item['telefono'])) {
+                // Eliminar espacios del número de teléfono
+                $cleanedPhone = preg_replace('/\s+/', '', $item['telefono']);
+                if (preg_match('/^\d{9}$/', $cleanedPhone)) {
+                    $phones[] = $cleanedPhone;
+                }
             }
         }
         dd($phones);
