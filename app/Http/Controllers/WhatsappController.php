@@ -357,7 +357,7 @@ class WhatsappController extends Controller
                   
                 }
                 $dataSend = [
-                    'id' => $isAutomatico->ayuda_id,
+                    'ayuda_id' => $isAutomatico->ayuda_id,
                     'mensaje' => $mensaje,
                     'interpretado' => $reponseChatGPT1
                 ];
