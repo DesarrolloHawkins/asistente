@@ -179,7 +179,7 @@ class AccionesController extends Controller
                 # code...
             }
         }
-        return response()->route('acciones.enviar');
+        return redirect()->route('acciones.enviar');
     }
 
     public function autoMensajeWhatsappTemplate($phone, $template)
