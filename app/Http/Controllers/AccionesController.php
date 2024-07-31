@@ -234,4 +234,15 @@ class AccionesController extends Controller
         Storage::disk('local')->put('Respuesta_Envio_Whatsapp-'.$phone.'.txt', json_encode($response));
         return $responseJson;
     }
+
+    public function listarMensajes($id){
+        $primerMensaje = Mensaje::where('ayuda_id', $id)->first();
+       
+        if ($primerMensaje) {
+            $mensajes = Mensaje::where('remitente', $primerMensaje->remitente)->get();
+            return response()->json($mensajes);
+        }
+
+        return response(404)->header('Content-Type', 'text/plain');
+    }
 }

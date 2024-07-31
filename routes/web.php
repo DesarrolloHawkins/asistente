@@ -28,3 +28,4 @@ Route::get('/mensajes-whatsapp', [App\Http\Controllers\WhatsappController::class
 Route::get('/acciones', [AccionesController::class, 'index'])->name('acciones.index');
 Route::get('/acciones/enviar', [AccionesController::class, 'enviar'])->name('acciones.enviar');
 Route::post('/acciones/enviar-mensajes', [AccionesController::class, 'enviarMensajes'])->name('acciones.enviarMensajes');
+Route::post('/listar-mensajes/{id}', [AccionesController::class, 'listarMensajes'])->name('acciones.listarMensajes');
