@@ -138,7 +138,7 @@ class AccionesController extends Controller
                         Te escribo principalmente para continuar con tu subvención. Quieres que te llamemos y avancemos con tu proyecto? Si no te viene bien hoy dime cuando te vendria bien. Quedo a la espera, Gracias!';
             break;
             case 18:
-                $template = 'kit_digital_10';
+                $template = 'kit_digital_leads';
                 $mensajeEnvio = 'Buenas tardes!
                     Me llamo Hera y te escribo de Hawkins, tu agente digitalizador para las subvenciones del kit digital.
                     Te escribo principalmente para saber si quieres avanzar con tu subvención! es una gran oportunidad para obtener servicios de valor añadido totalmente gratis.
