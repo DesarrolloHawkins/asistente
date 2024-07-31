@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('mensajes', function (Blueprint $table) {
 
             $table->bigInteger('client_id')->nullable();
-            $table->tinyInteger('mensaje_auto', 1)->nullable();
+            $table->tinyInteger('mensaje_auto')->nullable();
 
             $table->foreign('client_id')->references('id')->on('clients');
 
