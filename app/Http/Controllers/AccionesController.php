@@ -106,7 +106,7 @@ class AccionesController extends Controller
         $phones = [];
         foreach ($data['ayudas'] as $item) {
             if (isset($item['telefono']) && preg_match('/^\d{9}$/', $item['telefono'])) {
-                dd($item);
+                // dd($item);
                 $phones[] = $item['telefono'];
             }
         }
