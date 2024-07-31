@@ -331,20 +331,23 @@ class WhatsappController extends Controller
             ->first();
 
             if ($isAutomatico != null) {
-                $dataRegistrar = [
-                    'id_mensaje' => $id,
-                    'id_three' => null,
-                    'remitente' => $phone,
-                    'mensaje' => $mensaje,
-                    'respuesta' => null,
-                    'status' => 1,
-                    'status_mensaje' => 0,
-                    'type' => 'text',
-                    'date' => Carbon::now()
-                ];
-                $mensajeCreado = Mensaje::create($dataRegistrar);
+                // $dataRegistrar = [
+                //     'id_mensaje' => $id,
+                //     'id_three' => null,
+                //     'remitente' => $phone,
+                //     'mensaje' => $mensaje,
+                //     'respuesta' => null,
+                //     'status' => 1,
+                //     'status_mensaje' => 0,
+                //     'type' => 'text',
+                //     'date' => Carbon::now()
+                // ];
+                // $mensajeCreado = Mensaje::create($dataRegistrar);
                 $reponseChatGPT1 = $this->chatGptModelo($mensaje,$id);
                 if($reponseChatGPT1 == 1 || $reponseChatGPT1 == 0 || $reponseChatGPT1 == 2 || $reponseChatGPT1 == 3 ){
+                    $isAutomatico ->respuesta =$mensaje;
+                    $isAutomatico ->save();
+
                     $mensajeCreado1 = RespuestasMensajes::create([
                         'remitente' => $phone,
                         'mensaje' => $mensaje,
