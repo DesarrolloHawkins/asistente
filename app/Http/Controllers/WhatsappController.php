@@ -461,9 +461,9 @@ class WhatsappController extends Controller
         $response = curl_exec($curl);
         curl_close($curl);
         $response_data = json_decode($response, true);
-        Storage::disk('local')->put('Respuesta_Peticion_ChatGPT-Model.txt', $response );
+        Storage::disk('local')->put('Respuesta_Peticion_ChatGPT-Model.txt', $response_data['choices'][0]['message']['content'] );
 
-        return response()->json($response_data);
+        return $response_data['choices'][0]['message']['content'];
         // Procesar la respuesta
         if ($response === false) {
             $error = [
