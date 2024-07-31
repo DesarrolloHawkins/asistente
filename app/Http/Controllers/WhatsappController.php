@@ -359,7 +359,7 @@ class WhatsappController extends Controller
                 $dataSend = [
                     'ayuda_id' => $isAutomatico->ayuda_id,
                     'mensaje' => $mensaje,
-                    'interpretado' => $reponseChatGPT1
+                    'mensaje_interpretado' => $reponseChatGPT1
                 ];
                 $curl = curl_init();
 
