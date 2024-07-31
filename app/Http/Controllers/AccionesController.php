@@ -80,6 +80,7 @@ class AccionesController extends Controller
         $response = Http::post('https://crmhawkins.com/getAyudas', [
             'estado' => $categoria,
         ]);
+        dd($response);
 
         $data = $response->json();
 
