@@ -346,7 +346,7 @@ class WhatsappController extends Controller
                 $reponseChatGPT1 = $this->chatGptModelo($mensaje,$id);
 
                 if($reponseChatGPT1 == 1 || $reponseChatGPT1 == 0 || $reponseChatGPT1 == 2 || $reponseChatGPT1 == 3 ){
-                    $isAutomatico ->respuesta =$mensaje;
+                    $isAutomatico ->mensaje =$mensaje;
                     $isAutomatico ->save();
 
                     $mensajeCreado1 = RespuestasMensajes::create([
