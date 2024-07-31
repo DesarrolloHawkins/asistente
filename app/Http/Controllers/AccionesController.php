@@ -99,7 +99,7 @@ class AccionesController extends Controller
 
         $data = json_decode($response, true);
 
-        dd($data);
+        // dd($data);
 
         // $data = $response->json();
 
