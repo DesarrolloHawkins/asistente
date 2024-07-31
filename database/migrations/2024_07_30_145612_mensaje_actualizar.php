@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('mensajes', function (Blueprint $table) {
-            
             $table->tinyInteger('is_automatic')->nullable();
-            $table->int('ayuda_id')->nullable();
+            $table->integer('ayuda_id')->nullable();
         });
     }
 
@@ -23,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mensajes');
+        //Schema::dropIfExists('mensajes');
     }
 };
