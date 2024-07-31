@@ -144,30 +144,40 @@ class AccionesController extends Controller
                     Te escribo principalmente para saber si quieres avanzar con tu subvención! es una gran oportunidad para obtener servicios de valor añadido totalmente gratis.
                     Quieres que te llamemos y avancemos en el tema ? Quedo a la espera muchas gracias.';
             break;
+            case 4:
+                $template = 'kit_digital_aceptado';
+                $mensajeEnvio = 'Buenas tardes!
+                    Me llamo Hera y te escribo de Hawkins, tu agente digitalizador para las subvenciones del kit digital.
+                    Te escribo principalmente para recordarte que tienes tu kit digital aceptado pero que aun no nos has dicho a que servicio lo quieres destinar. Como los plazos de esa subvención están muy justos , te gustaría que te llamásemos y te ayudemos a elegir a que destinar el kit? Quedo a la espera muchas gracias!';
+            break;
             
             default:
                 # code...
                 break;
         }
         foreach($phones as $entry){
-            $phone = $entry['phone'];
-            $envioMensaje = $this->autoMensajeWhatsappTemplate('34'.$phone, $template);
-            $id = $envioMensaje['messages'][0]['id'];
-
-            $dataRegistrar = [
-                'id_mensaje' => $id,
-                'id_three' => null,
-                'remitente' => '34'.$phone,
-                'mensaje' => $mensajeEnvio,
-                'respuesta' => null,
-                'status' => 1,
-                'status_mensaje' => 1,
-                'type' => 'text',
-                'is_automatic' => true,
-                'ayuda_id' => $entry['id'],
-                'date' => Carbon::now()
-            ];
-            $mensajeCreado = Mensaje::create($dataRegistrar);
+            $mensajeCreado = Mensaje::where('ayuda_id',$entry['id'] )->first();
+            if (!$mensajeCreado) {
+                $phone = $entry['phone'];
+                $envioMensaje = $this->autoMensajeWhatsappTemplate('34'.$phone, $template);
+                $id = $envioMensaje['messages'][0]['id'];
+    
+                $dataRegistrar = [
+                    'id_mensaje' => $id,
+                    'id_three' => null,
+                    'remitente' => '34'.$phone,
+                    'mensaje' => $mensajeEnvio,
+                    'respuesta' => null,
+                    'status' => 1,
+                    'status_mensaje' => 1,
+                    'type' => 'text',
+                    'is_automatic' => true,
+                    'ayuda_id' => $entry['id'],
+                    'date' => Carbon::now()
+                ];
+                $mensajeCreado = Mensaje::create($dataRegistrar);
+                # code...
+            }
         }
         return response()->route('acciones.enviar');
     }
