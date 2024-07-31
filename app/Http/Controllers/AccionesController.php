@@ -76,13 +76,32 @@ class AccionesController extends Controller
     public function enviarMensajes(Request $request){  
         
         $categoria = $request->categoria;
+        // Realiza la solicitud HTTP para obtener los teléfonos usando cURL
+        $curl = curl_init();
 
-        $response = Http::post('https://crmhawkins.com/getAyudas', [
-            'estado' => $categoria,
+        curl_setopt_array($curl, [
+            CURLOPT_URL => 'https://crmhawkins.com/getAyudas',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => json_encode(['estado' => $categoria]),
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json'
+            ],
         ]);
-        dd($response);
 
-        $data = $response->json();
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        $data = json_decode($response, true);
+
+        dd($data);
+
+        // $data = $response->json();
 
         $phones = [];
         foreach ($data as $item) {
