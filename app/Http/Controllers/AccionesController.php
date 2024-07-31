@@ -104,7 +104,7 @@ class AccionesController extends Controller
         // $data = $response->json();
 
         $phones = [];
-        foreach ($data as $item) {
+        foreach ($data['ayudas'] as $item) {
             if (isset($item['telefono'])) {
                 // Eliminar espacios del número de teléfono
                 $cleanedPhone = preg_replace('/\s+/', '', $item['telefono']);
