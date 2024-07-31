@@ -322,6 +322,7 @@ class WhatsappController extends Controller
 
         $mensajeExiste = Mensaje::where( 'id_mensaje', $id )->get();
         if (count($mensajeExiste) > 0) {
+            return response(400)->header('Content-Type', 'text/plain');
 
         }else {
 
@@ -384,6 +385,7 @@ class WhatsappController extends Controller
                 Storage::disk('local')->put('Respuesta_Peticion_ChatGPT-Model.txt', $response );
 
                 curl_close($curl);
+                return response(200)->header('Content-Type', 'text/plain');
 
             }else {
                 $dataRegistrar = [
@@ -411,7 +413,9 @@ class WhatsappController extends Controller
                 $mensajeCreado->update([
                     'respuesta'=> $reponseChatGPT
                 ]);
-                return response($reponseChatGPT)->header('Content-Type', 'text/plain');
+                //return response($reponseChatGPT)->header('Content-Type', 'text/plain');
+                return response(201)->header('Content-Type', 'text/plain');
+
             }
 
             
