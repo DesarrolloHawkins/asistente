@@ -120,20 +120,20 @@ class AccionesController extends Controller
 
         //dd($phones);
 
-        $phones = [
-            [
-                'id' =>  7405,
-                'phone' => '605621704'
-            ],
-            [
-                'id' =>  7405,
-                'phone' => '622440984'
-            ],
-            [
-                'id' =>  7405,
-                'phone' => '626264646'
-            ],
-        ];
+        // $phones = [
+        //     [
+        //         'id' =>  7405,
+        //         'phone' => '605621704'
+        //     ],
+        //     [
+        //         'id' =>  7405,
+        //         'phone' => '622440984'
+        //     ],
+        //     [
+        //         'id' =>  7405,
+        //         'phone' => '626264646'
+        //     ],
+        // ];
         foreach($phones as $entry){
             $phone = $entry['phone'];
             $envioMensaje = $this->autoMensajeWhatsappTemplate('34'.$phone, 'kit_digital_10');
