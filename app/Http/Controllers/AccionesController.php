@@ -99,12 +99,12 @@ class AccionesController extends Controller
 
         $data = json_decode($response, true);
 
-        // dd($data);
+        dd($data['ayudas']);
 
         // $data = $response->json();
 
         $phones = [];
-        foreach ($data->ayudas as $item) {
+        foreach ($data['ayudas'] as $item) {
             if (isset($item['telefono']) && preg_match('/^\d{9}$/', $item['telefono'])) {
                 dd($item);
                 $phones[] = $item['telefono'];
