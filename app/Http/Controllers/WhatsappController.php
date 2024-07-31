@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\Mensaje;
+use App\Models\RespuestasMensajes;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -322,35 +323,204 @@ class WhatsappController extends Controller
         if (count($mensajeExiste) > 0) {
 
         }else {
-            $dataRegistrar = [
-                'id_mensaje' => $id,
-                'id_three' => null,
-                'remitente' => $phone,
-                'mensaje' => $mensaje,
-                'respuesta' => null,
-                'status' => 1,
-                'status_mensaje' => 0,
-                'type' => 'text',
-                'date' => Carbon::now()
-            ];
-            $mensajeCreado = Mensaje::create($dataRegistrar);
 
-            $reponseChatGPT = $this->chatGpt($mensaje,$id);
+            $isAutomatico = Mensaje::where('remitente', $phone)
+            ->where('is_automatic', true)
+            ->orderBy('created_at', 'desc')
+            ->first();
 
-            $respuestaWhatsapp = $this->contestarWhatsapp($phone, $reponseChatGPT);
-            if(isset($respuestaWhatsapp['error'])){
-                dd($respuestaWhatsapp);
+            if ($isAutomatico != null) {
+                $dataRegistrar = [
+                    'id_mensaje' => $id,
+                    'id_three' => null,
+                    'remitente' => $phone,
+                    'mensaje' => $mensaje,
+                    'respuesta' => null,
+                    'status' => 1,
+                    'status_mensaje' => 0,
+                    'type' => 'text',
+                    'date' => Carbon::now()
+                ];
+                $mensajeCreado = Mensaje::create($dataRegistrar);
+                $reponseChatGPT1 = $this->chatGptModelo($mensaje,$id);
+                if($reponseChatGPT1 == 1 || $reponseChatGPT1 == 0 || $reponseChatGPT1 == 2 || $reponseChatGPT1 == 3 ){
+                    $mensajeCreado1 = RespuestasMensajes::create([
+                        'remitente' => $phone,
+                        'mensaje' => $mensaje,
+                        'respuesta' =>$reponseChatGPT1
+                    ]);
+                  
+                }
+
+            }else {
+                $dataRegistrar = [
+                    'id_mensaje' => $id,
+                    'id_three' => null,
+                    'remitente' => $phone,
+                    'mensaje' => $mensaje,
+                    'respuesta' => null,
+                    'status' => 1,
+                    'status_mensaje' => 0,
+                    'type' => 'text',
+                    'date' => Carbon::now()
+                ];
+                $mensajeCreado = Mensaje::create($dataRegistrar);
+                // $mensajeExiste = Mensaje::where('id_mensaje', $id)->first();
+				// $mensajeExiste->id_three = null;
+				// $mensajeExiste->save();
+				
+			 	$reponseChatGPT = $this->chatGpt($mensaje,$id);
+				
+                $respuestaWhatsapp = $this->contestarWhatsapp($phone, $reponseChatGPT);
+                if(isset($respuestaWhatsapp['error'])){
+                    dd($respuestaWhatsapp);
+                }
+                $mensajeCreado->update([
+                    'respuesta'=> $reponseChatGPT
+                ]);
+                return response($reponseChatGPT)->header('Content-Type', 'text/plain');
             }
-            $mensajeCreado->update([
-                'respuesta'=> $reponseChatGPT
-            ]);
-            return response($reponseChatGPT)->header('Content-Type', 'text/plain');
+
+            
+			
+
+            //$reponseChatGPT1 = $this->chatGpt1($mensaje,$id);
+
+			// if($reponseChatGPT1 == 'Si' || $reponseChatGPT1 == 'No' || $reponseChatGPT1 == 'No se'){
+			// 	$mensajeCreado1 = RespuestasMensajes::create([
+            //         'remitente' => $phone,
+            //         'mensaje' => $mensaje,
+            //         'respuesta' =>$reponseChatGPT1
+            //     ]);
+              
+            // }else{
+        	// 	$mensajeExiste = Mensaje::where('id_mensaje', $id)->first();
+			// 	$mensajeExiste->id_three = null;
+			// 	$mensajeExiste->save();
+				
+			//  	$reponseChatGPT = $this->chatGpt($mensaje,$id);
+				
+            //     $respuestaWhatsapp = $this->contestarWhatsapp($phone, $reponseChatGPT);
+            //     if(isset($respuestaWhatsapp['error'])){
+            //         dd($respuestaWhatsapp);
+            //     }
+            //     $mensajeCreado->update([
+            //         'respuesta'=> $reponseChatGPT
+            //     ]);
+            //     return response($reponseChatGPT)->header('Content-Type', 'text/plain');
+            // }
 
         }
     }
+    public function chatGptModelo($respuestaCliente) {
+        $token = env('TOKEN_OPENAI', 'valorPorDefecto');
+       
+        // Configurar los parámetros de la solicitud
+        $url = 'https://api.openai.com/v1/chat/completions';
+        $headers = array(
+            'Authorization: Bearer ' . $token,
+            'Content-Type: application/json'
+        );
 
+        $data = array(
+            "model" => "gpt-4o",
+            "messages" => [
+                [
+                    "role" => "user",
+                    "content" => [
+                        [
+                            "type" => "text",
+                            "text" => 'Analiza la respuesta de un cliente a este mensaje:
+                            Buenas tardes!
+                            Me llamo Hera y te escribo de Hawkins, tu agente digitalizador para las subvenciones del kit digital.
+                            Te escribo principalmente para continuar con tu subvención. Quieres que te llamemos mañana y avancemos con tu proyecto? Quedo a la espera, Gracias!;
+                            Necesito que me respondas con lo que quiere decir el cliente al responder a ese texto ( "Si", "No", "No se") esta es la respuesta del cliente:'. $respuestaCliente .'
+                            Respondeme solo con la opcion nada mas, si es SI enviame un 1, si es No 0, si es NO SE enviame un 2, si es algo contrario a todo esto enviame un 3.' 
+                        ]
+                    ]
+                ]
+            ]
+        );
+
+        // Inicializar cURL y configurar las opciones
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        // Ejecutar la solicitud y obtener la respuesta
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $response_data = json_decode($response, true);
+        return response()->json($response_data);
+        // Procesar la respuesta
+        if ($response === false) {
+            $error = [
+                'status' => 'error',
+                'messages' => 'Error al realizar la solicitud'
+            ];
+
+            return response()->json($error);
+        } else {
+            $response_data = json_decode($response, true);
+            $responseReturn = [
+                'status' => 'ok',
+                'messages' => $response_data['choices'][0]['text']
+            ];
+
+            return response()->json($response_data);
+        }
+        
+
+    }
     public function chatGptPruebas(Request $request) {
 
+    }
+    public function chatGpt1($mensaje, $id)
+    {
+        $mensajeExiste = Mensaje::where('id_mensaje', $id)->first();
+
+        if ($mensajeExiste->id_three === null) {
+            // Crear un nuevo hilo si no existe
+            $three_id = $this->crearHilo();
+            $mensajeExiste->id_three = $three_id['id'];
+            $mensajeExiste->save();
+        }
+
+        // Independientemente de si el hilo es nuevo o existente, inicia la ejecución
+        $hilo = $this->mensajeHilo($mensajeExiste->id_three, $mensaje);
+        $ejecuccion = $this->ejecutarHilo1($three_id['id']);
+        $ejecuccionStatus = $this->ejecutarHiloStatus($three_id['id'], $ejecuccion['id']);
+        //dd($ejecuccionStatus);
+        // Inicia un bucle para esperar hasta que el hilo se complete
+        while (true) {
+            //$ejecuccion = $this->ejecutarHilo($three_id['id']);
+
+            if ($ejecuccionStatus['status'] === 'in_progress') {
+                // Espera activa antes de verificar el estado nuevamente
+                sleep(5); // Ajusta este valor según sea necesario
+
+                // Verifica el estado del paso actual del hilo
+                $pasosHilo = $this->ejecutarHiloISteeps($three_id['id'], $ejecuccion['id']);
+                if ($pasosHilo['data'][0]['status'] === 'completed') {
+                    // Si el paso se completó, verifica el estado general del hilo
+                    $ejecuccionStatus = $this->ejecutarHiloStatus($three_id['id'],$ejecuccion['id']);
+                }
+            } elseif ($ejecuccionStatus['status'] === 'completed') {
+                // El hilo ha completado su ejecución, obtiene la respuesta final
+                $mensajes = $this->listarMensajes($three_id['id']);
+				//dd($mensajes);
+                if(count($mensajes['data']) > 0){
+                    return $mensajes['data'][0]['content'][0]['text']['value'];
+                }
+            } else {
+                // Maneja otros estados, por ejemplo, errores
+				dd($ejecuccionStatus);
+                break; // Sale del bucle si se encuentra un estado inesperado
+            }
+        }
     }
     public function chatGpt($mensaje, $id)
     {
@@ -464,6 +634,43 @@ class WhatsappController extends Controller
         } else {
             $response_data = json_decode($response, true);
             // Storage::disk('local')->put('Respuesta_Peticion_ChatGPT-'.$id.'.txt', $response );
+            return $response_data;
+        }
+    }
+    public function ejecutarHilo1($id_thread){
+        $token = env('TOKEN_OPENAI', 'valorPorDefecto');
+        $url = 'https://api.openai.com/v1/threads/'.$id_thread.'/runs';
+
+        $headers = array(
+            'Content-Type: application/json',
+            'Authorization: Bearer '. $token,
+            "OpenAI-Beta: assistants=v1"
+        );
+
+        $body = [
+            "assistant_id" => 'asst_g5C8HrIw2NSQ5Tgcz750MDiC'
+        ];
+        // Inicializar cURL y configurar las opciones
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS,json_encode($body));
+
+        // Ejecutar la solicitud y obtener la respuesta
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        // Procesar la respuesta
+        if ($response === false) {
+            $error = [
+            'status' => 'error',
+            'messages' => 'Error al realizar la solicitud'
+            ];
+
+        } else {
+            $response_data = json_decode($response, true);
             return $response_data;
         }
     }
@@ -680,11 +887,22 @@ class WhatsappController extends Controller
         ]);
 
         $response = curl_exec($curl);
-        curl_close($curl);
-        $responseJson = json_decode($response, true);
+		if ($response === false) {
+			$error = curl_error($curl);
+			curl_close($curl);
+			Log::error("Error en cURL al enviar mensaje de WhatsApp: " . $error);
+			return ['error' => $error];
+		}
+		curl_close($curl);
 
-        Storage::disk('local')->put('Respuesta_Envio_Whatsapp-'.$phone.'.txt', json_encode($response));
-        return $responseJson;
+		try {
+			$responseJson = json_decode($response, true);
+			Storage::disk('local')->put("Respuesta_Envio_Whatsapp-{$phone}.txt", $response);
+			return $responseJson;
+		} catch (\Exception $e) {
+			Log::error("Error al guardar la respuesta de WhatsApp: " . $e->getMessage());
+			return ['error' => $e->getMessage()];
+		}
     }
 
     public function autoMensajeWhatsappTemplate($phone, $client, $template)

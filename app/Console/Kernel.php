@@ -22,16 +22,20 @@ class Kernel extends ConsoleKernel
             // Obtener la fecha de hoy
             $hoy = Carbon::now();
             // Obtenemos la reservas que sean igual o superior a la fecha de entrada de hoy y no tengan el DNI Enrtegado.
-            $clientes = Client::where('send', null)
+           // $clientes = Client::where('send', null)
             // ->where('id', 13)
-            ->orderBy('id', 'asc')
+          //  ->orderBy('id', 'asc')
             // ->where('estado_id', 1)
             // ->where('fecha_entrada', '>=', $hoy->toDateString())
-            ->take(10)
-            ->get();
+            //->take(10)
+            //->get();
+			
+			$phones =[
+				'659594307','659903047'
+			];
 
-            foreach($clientes as $client){
-                $envioMensaje = $this->autoMensajeWhatsappTemplate('34'.$client->phone, $client->name, 'clientes_vip');
+            foreach($phones as $phone){
+                $envioMensaje = $this->autoMensajeWhatsappTemplate('34'.$phone, 'pepe', 'kit_digital_10');
                 $id = $envioMensaje['messages'][0]['id'];
                 // "{
                 //     \"messaging_product\":\"whatsapp\",
@@ -49,26 +53,25 @@ class Kernel extends ConsoleKernel
                 //     ]
                 // }";
 
-                $mensaje = 'Hola '.$client->name.' ! Soy Hera, de la agencia de publicidad *Hawkins*. Encantada!
-                Te escribo porque hemos implantado un programa de recomendación para un grupo pequeño de clientes VIP, entre los que tú estás.
-                Es sencillo, desde hoy, si nos recomiendas a algún cliente, el 8% de la facturación es para ti. Lo puedes recibir en metálico o en un cheque de servicios.
-                Por ejemplo: si nos recomiendas a un amigo y le tramitamos un kit digital de 6000€, te premiamos a ti con 480€.
-                *¿Qué te parece?*';
+                $mensaje = 'Buenas tardes!
+							Me llamo Hera y te escribo de Hawkins, tu agente digitalizador para las subvenciones del kit digital.
+							Te escribo principalmente para continuar con tu subvención. Quieres que te llamemos mañana y avancemos con tu 								proyecto? Quedo a la espera, Gracias!';
 
                 $dataRegistrar = [
                     'id_mensaje' => $id,
                     'id_three' => null,
-                    'remitente' => '34'.$client->phone,
+                    'remitente' => '34'.$phone,
                     'mensaje' => null,
                     'respuesta' => $mensaje,
                     'status' => 1,
                     'status_mensaje' => 1,
                     'type' => 'text',
+                    'is_automatic' => true,
                     'date' => Carbon::now()
                 ];
                 $mensajeCreado = Mensaje::create($dataRegistrar);
-                $client->send = true;
-                $client->save();
+                //$client->send = true;
+                //$client->save();
             }
             Log::info("Tarea programada de Envio Mesanje ClienteVip auto al cliente ejecutada con éxito.");
         })->everyMinute();
@@ -100,14 +103,14 @@ class Kernel extends ConsoleKernel
                 "language" => [
                     "code" => 'es_ES'
                 ],
-                "components" => [
+                /*"components" => [
                     [
                         "type" => 'body',
                         "parameters" => [
                             ["type" => "text", "text" => $client],
                         ],
                     ]
-                ]
+                ]*/
             ]
         ];
 
