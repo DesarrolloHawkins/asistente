@@ -8,6 +8,7 @@ use App\Models\RespuestasMensajes;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 
 class WhatsappController extends Controller
 {
@@ -351,6 +352,12 @@ class WhatsappController extends Controller
                     ]);
                   
                 }
+
+                $response = Http::post('https://crmhawkins.com/updateAyudas', [
+                    'id' => $isAutomatico->ayuda_id,
+                    'mensaje' => $mensaje,
+                    'interpretado' => $reponseChatGPT1
+                ]);
 
             }else {
                 $dataRegistrar = [

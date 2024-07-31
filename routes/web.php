@@ -26,3 +26,5 @@ Route::get('/chatgpt/{texto}', [App\Http\Controllers\WhatsappController::class, 
 
 Route::get('/mensajes-whatsapp', [App\Http\Controllers\WhatsappController::class, 'whatsapp'])->name('whatsapp.mensajes');
 Route::get('/acciones', [AccionesController::class, 'index'])->name('acciones.index');
+Route::get('/acciones/enviar', [AccionesController::class, 'enviar'])->name('acciones.enviar');
+Route::post('/acciones/enviar-mensajes', [AccionesController::class, 'enviarMensajes'])->name('acciones.enviarMensajes');
