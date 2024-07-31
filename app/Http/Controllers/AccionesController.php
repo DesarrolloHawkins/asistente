@@ -118,7 +118,22 @@ class AccionesController extends Controller
         }
         $phones = array_unique($phones, SORT_REGULAR);
 
-        dd($phones);
+        //dd($phones);
+
+        $phones = [
+            [
+                'id' =>  7405,
+                'phone' => '605621704'
+            ],
+            [
+                'id' =>  7405,
+                'phone' => '622440984'
+            ],
+            [
+                'id' =>  7405,
+                'phone' => '626264646'
+            ],
+        ];
         foreach($phones as $entry){
             $phone = $entry['phone'];
             $envioMensaje = $this->autoMensajeWhatsappTemplate('34'.$phone, 'kit_digital_10');
