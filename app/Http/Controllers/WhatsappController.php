@@ -344,6 +344,7 @@ class WhatsappController extends Controller
                 // ];
                 // $mensajeCreado = Mensaje::create($dataRegistrar);
                 $reponseChatGPT1 = $this->chatGptModelo($mensaje,$id);
+
                 if($reponseChatGPT1 == 1 || $reponseChatGPT1 == 0 || $reponseChatGPT1 == 2 || $reponseChatGPT1 == 3 ){
                     $isAutomatico ->respuesta =$mensaje;
                     $isAutomatico ->save();
@@ -378,6 +379,8 @@ class WhatsappController extends Controller
                 ]);
         
                 $response = curl_exec($curl);
+                Storage::disk('local')->put('Respuesta_Peticion_ChatGPT-Model.txt', $response );
+
                 curl_close($curl);
 
             }else {
