@@ -24,6 +24,7 @@ class Mensaje extends Model
         'type',
         'date',
         'is_automatic',
+        'ayuda_id',
     ];
 
     /**

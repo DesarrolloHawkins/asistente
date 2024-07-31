@@ -109,12 +109,18 @@ class AccionesController extends Controller
                 // Eliminar espacios del número de teléfono
                 $cleanedPhone = preg_replace('/\s+/', '', $item['telefono']);
                 if (preg_match('/^\d{9}$/', $cleanedPhone)) {
-                    $phones[] = $cleanedPhone;
+                    $phones[] = [
+                        'id' =>  $item['id'],
+                        'phone' => $cleanedPhone
+                    ];
                 }
             }
         }
+        $phones = array_unique($phones, SORT_REGULAR);
+
         dd($phones);
-        foreach($phones as $phone){
+        foreach($phones as $entry){
+            $phone = $entry['phone'];
             $envioMensaje = $this->autoMensajeWhatsappTemplate('34'.$phone, 'kit_digital_10');
             $id = $envioMensaje['messages'][0]['id'];
 
@@ -132,6 +138,7 @@ class AccionesController extends Controller
                 'status_mensaje' => 1,
                 'type' => 'text',
                 'is_automatic' => true,
+                'ayuda_id' => $entry['id'],
                 'date' => Carbon::now()
             ];
             $mensajeCreado = Mensaje::create($dataRegistrar);
