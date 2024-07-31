@@ -99,10 +99,6 @@ class AccionesController extends Controller
 
         $data = json_decode($response, true);
 
-        // dd($data['ayudas']);
-
-        // $data = $response->json();
-
         $phones = [];
         foreach ($data['ayudas'] as $item) {
             if (isset($item['telefono'])) {
@@ -117,9 +113,6 @@ class AccionesController extends Controller
             }
         }
         $phones = array_unique($phones, SORT_REGULAR);
-
-        //dd($phones);
-
         // $phones = [
         //     [
         //         'id' =>  7405,
@@ -134,20 +127,38 @@ class AccionesController extends Controller
         //         'phone' => '626264646'
         //     ],
         // ];
-        foreach($phones as $entry){
-            $phone = $entry['phone'];
-            $envioMensaje = $this->autoMensajeWhatsappTemplate('34'.$phone, 'kit_digital_10');
-            $id = $envioMensaje['messages'][0]['id'];
+        $template;
+        $mensajeEnvio;
 
-            $mensaje = 'Buenas tardes!
+        switch ($categoria) {
+            case 24:
+                $template = 'kit_digital_10';
+                $mensajeEnvio = 'Buenas tardes!
                         Me llamo Hera y te escribo de Hawkins, tu agente digitalizador para las subvenciones del kit digital.
                         Te escribo principalmente para continuar con tu subvención. Quieres que te llamemos y avancemos con tu proyecto? Si no te viene bien hoy dime cuando te vendria bien. Quedo a la espera, Gracias!';
+            break;
+            case 18:
+                $template = 'kit_digital_10';
+                $mensajeEnvio = 'Buenas tardes!
+                    Me llamo Hera y te escribo de Hawkins, tu agente digitalizador para las subvenciones del kit digital.
+                    Te escribo principalmente para saber si quieres avanzar con tu subvención! es una gran oportunidad para obtener servicios de valor añadido totalmente gratis.
+                    Quieres que te llamemos y avancemos en el tema ? Quedo a la espera muchas gracias.';
+            break;
+            
+            default:
+                # code...
+                break;
+        }
+        foreach($phones as $entry){
+            $phone = $entry['phone'];
+            $envioMensaje = $this->autoMensajeWhatsappTemplate('34'.$phone, $template);
+            $id = $envioMensaje['messages'][0]['id'];
 
             $dataRegistrar = [
                 'id_mensaje' => $id,
                 'id_three' => null,
                 'remitente' => '34'.$phone,
-                'mensaje' => $mensaje,
+                'mensaje' => $mensajeEnvio,
                 'respuesta' => null,
                 'status' => 1,
                 'status_mensaje' => 1,
@@ -158,6 +169,7 @@ class AccionesController extends Controller
             ];
             $mensajeCreado = Mensaje::create($dataRegistrar);
         }
+        return response()->route('acciones.enviar');
     }
 
     public function autoMensajeWhatsappTemplate($phone, $template)
