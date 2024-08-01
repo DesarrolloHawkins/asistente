@@ -245,4 +245,41 @@ class AccionesController extends Controller
 
         return response(404)->header('Content-Type', 'text/plain');
     }
-}
+
+    public function actualizar (){
+
+        $isAutomatico = Mensaje::where('is_automatic', true)
+            ->where('respuesta', null)
+            ->get();
+
+        if (count($isAutomatico) > 0) {
+            foreach($isAutomatico as $item){
+                $dataSend = [
+                    'ayuda_id' => $isAutomatico->ayuda_id,
+                    'mensaje' => $item->mensaje,
+                    'mensaje_interpretado' => $item->mensaje
+                ];
+                $curl = curl_init();
+    
+                curl_setopt_array($curl, [
+                    CURLOPT_URL => 'https://crmhawkins.com/updateAyudas',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => json_encode($dataSend),
+                    CURLOPT_HTTPHEADER => [
+                        'Content-Type: application/json'
+                    ],
+                ]);
+        
+                $response = curl_exec($curl);
+                curl_close($curl);
+            }
+
+        }
+    }
+}   

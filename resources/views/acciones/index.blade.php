@@ -68,6 +68,11 @@
   <div class="container">
     <img src="https://telefonia.hawkins.es/hera.png" alt="Imagen de Hera">
     <a href="{{route('acciones.enviar')}}">Enviar mensaje</a>
+    <form action="{{route('acciones.actualizar')}}" method="POST">
+      @csrf
+      <button type="submit">Actualizar</button>
+    </form>
+    {{-- <a href="">Actualizar</a> --}}
   </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js" integrity="sha512-ykZ1QQr0Jy/4ZkvKuqWn4iF3lqPZyij9iRv6sGqLRdTPkY69YX6+7wvVGmsdBbiIfN/8OdsI7HABjvEok6ZopQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
