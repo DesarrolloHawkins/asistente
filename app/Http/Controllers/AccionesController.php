@@ -255,7 +255,7 @@ class AccionesController extends Controller
         if (count($isAutomatico) > 0) {
             foreach($isAutomatico as $item){
                 $dataSend = [
-                    'ayuda_id' => $isAutomatico->ayuda_id,
+                    'ayuda_id' => $item->ayuda_id,
                     'mensaje' => $item->mensaje,
                     'mensaje_interpretado' => $item->mensaje
                 ];
