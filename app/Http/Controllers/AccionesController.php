@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Mensaje;
+use App\Models\RespuestasMensajes;
 use Carbon\Carbon;
 
 
@@ -316,39 +317,64 @@ Te escribo principalmente para recordarte que ahora con tu kit digital te podemo
     }
 
     public function actualizar (){
+        $whatsappController = new WhatsappController();
+       $isAutomatico = Mensaje::where('is_automatic', true)
+           ->where('respuesta', null)
+           ->get();
 
-        $isAutomatico = Mensaje::where('is_automatic', true)
-            ->where('respuesta', null)
-            ->get();
+       if (count($isAutomatico) > 0) {
+           foreach($isAutomatico as $item){
+               
+                $nextMensaje = Mensaje::where('remitente', $item->remitente)
+               ->where('created_at', '>', $item->created_at)
+               ->where('is_automatic',null)
+               ->orderBy('created_at', 'asc')
+               ->first();
+               
+           if ($nextMensaje) {
+                $reponseChatGPT1 = $whatsappController->chatGptModelo($nextMensaje->mensaje);
+               
+               if($reponseChatGPT1 == 1 || $reponseChatGPT1 == 0 || $reponseChatGPT1 == 2 || $reponseChatGPT1 == 3 ){
+                      //$item ->respuesta =$mensaje;
+                   //$item ->save();
+                   $mensajeCreado1 = RespuestasMensajes::create([
+                       'remitente' => $item->remitente,
+                       'mensaje' => $nextMensaje->mensaje,
+                       'respuesta' =>$reponseChatGPT1
+                   ]);
+                 
+               }
+               $dataSend = [
+                   'ayuda_id' => $item->ayuda_id,
+                   'mensaje' => $mensajeCreado1->mensaje,
+                   'mensaje_interpretado' => $mensajeCreado1->respuesta
+               ];
+               $curl = curl_init();
+   
+               curl_setopt_array($curl, [
+                   CURLOPT_URL => 'https://crmhawkins.com/updateAyudas',
+                   CURLOPT_RETURNTRANSFER => true,
+                   CURLOPT_ENCODING => '',
+                   CURLOPT_MAXREDIRS => 10,
+                   CURLOPT_TIMEOUT => 0,
+                   CURLOPT_FOLLOWLOCATION => true,
+                   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                   CURLOPT_CUSTOMREQUEST => 'POST',
+                   CURLOPT_POSTFIELDS => json_encode($dataSend),
+                   CURLOPT_HTTPHEADER => [
+                       'Content-Type: application/json'
+                   ],
+               ]);
+       
+               $response = curl_exec($curl);
+               curl_close($curl);
+               /*if($item->id == 1587){
+                               dd($response);
+               }*/
+           }
+       }
 
-        if (count($isAutomatico) > 0) {
-            foreach($isAutomatico as $item){
-                $dataSend = [
-                    'ayuda_id' => $item->ayuda_id,
-                    'mensaje' => $item->mensaje,
-                    'mensaje_interpretado' => $item->mensaje
-                ];
-                $curl = curl_init();
-    
-                curl_setopt_array($curl, [
-                    CURLOPT_URL => 'https://crmhawkins.com/updateAyudas',
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_ENCODING => '',
-                    CURLOPT_MAXREDIRS => 10,
-                    CURLOPT_TIMEOUT => 0,
-                    CURLOPT_FOLLOWLOCATION => true,
-                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                    CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => json_encode($dataSend),
-                    CURLOPT_HTTPHEADER => [
-                        'Content-Type: application/json'
-                    ],
-                ]);
-        
-                $response = curl_exec($curl);
-                curl_close($curl);
-            }
-
-        }
-    }
+       }
+               return redirect()->route('acciones.index');
+   }
 }   
