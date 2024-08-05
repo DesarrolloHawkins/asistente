@@ -207,21 +207,24 @@ class AccionesController extends Controller
         curl_close($curl);
 
         $data = json_decode($response, true);
-        dd($data);
         $phones = [];
+        $seenPhones = [];  // Array para llevar registro de los teléfonos ya procesados
+
         foreach ($data['ayudas'] as $item) {
             if (isset($item['telefono'])) {
-                // Eliminar espacios del número de teléfono
                 $cleanedPhone = preg_replace('/\s+/', '', $item['telefono']);
-                if (preg_match('/^\d{9}$/', $cleanedPhone)) {
+                if (preg_match('/^\d{9}$/', $cleanedPhone) && !in_array($cleanedPhone, $seenPhones)) {
                     $phones[] = [
                         'id' =>  $item['id'],
                         'phone' => $cleanedPhone
                     ];
+                    $seenPhones[] = $cleanedPhone;  // Agregar el teléfono al registro de vistos
                 }
             }
         }
-        $phones = array_unique($phones, SORT_REGULAR);
+        dd($phones);
+
+            // $phones = array_unique($phones, SORT_REGULAR);
         $mensajeEnvio = "Buenas!
 Me llamo Hera y te escribo de Hawkins, tu agente digitalizador para las subvenciones del kit digital.
 Te escribo principalmente para recordarte que ahora con tu kit digital te podemos solicitar un ordenador portátil o sobre mesa totalmente gratis. Quieres que te llamemos y te ampliemos la información? Quedo a la espera muchas gracias!";
