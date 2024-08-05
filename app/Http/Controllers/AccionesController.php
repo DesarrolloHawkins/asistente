@@ -233,6 +233,7 @@ Te escribo principalmente para recordarte que ahora con tu kit digital te podemo
             if (!$mensajeCreado) {
                 $phone = $entry['phone'];
                 $envioMensaje = $this->autoMensajeWhatsappTemplate('34'.$phone, 'kit_digital_ordenadores');
+                dd($envioMensaje);
                 $id = $envioMensaje['messages'][0]['id'];
     
                 $dataRegistrar = [
