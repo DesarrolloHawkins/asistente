@@ -29,5 +29,6 @@ Route::get('/acciones', [AccionesController::class, 'index'])->name('acciones.in
 Route::get('/acciones/enviar', [AccionesController::class, 'enviar'])->name('acciones.enviar');
 Route::post('/acciones/enviar-mensajes', [AccionesController::class, 'enviarMensajes'])->name('acciones.enviarMensajes');
 Route::post('/listar-mensajes/{id}', [AccionesController::class, 'listarMensajes'])->name('acciones.listarMensajes');
+Route::post('/acciones/enviar-segmento-3', [AccionesController::class, 'enviarMensajesSegmentos'])->name('acciones.enviarMensajesSegmentos');
 
 Route::post('/actualizar', [AccionesController::class, 'actualizar'])->name('acciones.actualizar');

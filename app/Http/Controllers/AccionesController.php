@@ -181,6 +181,75 @@ class AccionesController extends Controller
         }
         return redirect()->route('acciones.enviar');
     }
+    public function enviarMensajesSegmentos(Request $request){  
+        
+        $categoria = $request->categoria;
+        // Realiza la solicitud HTTP para obtener los teléfonos usando cURL
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => 'https://crmhawkins.com/getAyudasSegmento3',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => json_encode(['estado' => $categoria]),
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json'
+            ],
+        ]);
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        $data = json_decode($response, true);
+        dd($data);
+        $phones = [];
+        foreach ($data['ayudas'] as $item) {
+            if (isset($item['telefono'])) {
+                // Eliminar espacios del número de teléfono
+                $cleanedPhone = preg_replace('/\s+/', '', $item['telefono']);
+                if (preg_match('/^\d{9}$/', $cleanedPhone)) {
+                    $phones[] = [
+                        'id' =>  $item['id'],
+                        'phone' => $cleanedPhone
+                    ];
+                }
+            }
+        }
+        $phones = array_unique($phones, SORT_REGULAR);
+        $mensajeEnvio = "Buenas!
+Me llamo Hera y te escribo de Hawkins, tu agente digitalizador para las subvenciones del kit digital.
+Te escribo principalmente para recordarte que ahora con tu kit digital te podemos solicitar un ordenador portátil o sobre mesa totalmente gratis. Quieres que te llamemos y te ampliemos la información? Quedo a la espera muchas gracias!";
+        foreach($phones as $entry){
+            $mensajeCreado = Mensaje::where('ayuda_id',$entry['id'] )->first();
+            if (!$mensajeCreado) {
+                $phone = $entry['phone'];
+                $envioMensaje = $this->autoMensajeWhatsappTemplate('34'.$phone, 'kit_digital_ordenadores');
+                $id = $envioMensaje['messages'][0]['id'];
+    
+                $dataRegistrar = [
+                    'id_mensaje' => $id,
+                    'id_three' => null,
+                    'remitente' => '34'.$phone,
+                    'respuesta' => $mensajeEnvio,
+                    'mensaje' => null,
+                    'status' => 1,
+                    'status_mensaje' => 1,
+                    'type' => 'text',
+                    'is_automatic' => true,
+                    'ayuda_id' => $entry['id'],
+                    'date' => Carbon::now()
+                ];
+                $mensajeCreado = Mensaje::create($dataRegistrar);
+                # code...
+            }
+        }
+        return redirect()->route('acciones.enviar');
+    }
 
     public function autoMensajeWhatsappTemplate($phone, $template)
     {
