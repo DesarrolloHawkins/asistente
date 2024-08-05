@@ -222,7 +222,7 @@ class AccionesController extends Controller
                 }
             }
         }
-        dd($phones);
+        // dd($phones);
 
             // $phones = array_unique($phones, SORT_REGULAR);
         $mensajeEnvio = "Buenas!
